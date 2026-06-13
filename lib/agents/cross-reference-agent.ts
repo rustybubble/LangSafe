@@ -1,5 +1,5 @@
 import { getErrorMessage } from "../utils/errors";
-import Anthropic from "@anthropic-ai/sdk";
+import { FeatherlessClient, Featherless } from "../apis/featherless.js";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -41,7 +41,7 @@ export interface CrossRefResult {
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const MODEL = "claude-haiku-4-5-20251001";
+const MODEL = process.env.FEATHERLESS_MODEL || "Qwen/Qwen2.5-7B-Instruct";
 const MAX_TOKENS = 8_192;
 const BATCH_SIZE = 50;
 const MAX_TURNS_PER_BATCH = 4;
@@ -79,7 +79,7 @@ Be thorough — check every entry. Even partial matches (same headword, differen
 
 // ─── Tool definitions ────────────────────────────────────────────────────────
 
-const TOOLS: Anthropic.Tool[] = [
+const TOOLS: Featherless.Tool[] = [
   {
     name: "search_existing",
     description:
@@ -186,7 +186,7 @@ export async function runCrossReferenceAgent(
     mergedData: Record<string, unknown>
   ) => Promise<void>,
 ): Promise<CrossRefResult> {
-  const client = new Anthropic({ maxRetries: 3 });
+  const client = new FeatherlessClient({ maxRetries: 3 });
   let totalMerged = 0;
   const allClusters = new Set<string>();
   let totalProcessed = 0;
@@ -226,7 +226,7 @@ export async function runCrossReferenceAgent(
       )
       .join("\n");
 
-    const messages: Anthropic.MessageParam[] = [
+    const messages: Featherless.MessageParam[] = [
       {
         role: "user",
         content: `Cross-reference the following ${batch.length} newly extracted entries from "${sourceTitle}".
@@ -242,7 +242,7 @@ ${entrySummary}`,
     ];
 
     for (let turn = 0; turn < MAX_TURNS_PER_BATCH; turn++) {
-      let response: Anthropic.Message;
+      let response: Featherless.Message;
       try {
         response = await client.messages.create({
           model: MODEL,
@@ -254,7 +254,7 @@ ${entrySummary}`,
         });
       } catch (err) {
         console.error(
-          `[CrossRefAgent] Claude API error on batch ${batchIdx + 1}, turn ${turn}: ${getErrorMessage(err)}`
+          `[CrossRefAgent] Featherless API error on batch ${batchIdx + 1}, turn ${turn}: ${getErrorMessage(err)}`
         );
         break;
       }
@@ -270,7 +270,7 @@ ${entrySummary}`,
         break;
       }
 
-      const toolResults: Anthropic.ToolResultBlockParam[] = [];
+      const toolResults: Featherless.ToolResultBlockParam[] = [];
 
       for (const block of response.content) {
         if (block.type !== "tool_use") continue;

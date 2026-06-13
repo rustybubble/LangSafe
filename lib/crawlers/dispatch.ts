@@ -4,6 +4,7 @@ import { PDFParse } from "pdf-parse";
 import { z } from "zod";
 import { fetchViaProxy, brightDataConfigured } from "./brightdata";
 import { brightdataScrapeMarkdown, brightDataMCPConfigured } from "../apis/brightdata-mcp";
+import { getStagehandModelConfig } from "../apis/stagehand-model";
 import { browse } from "../elastic";
 import { crawlGlottolog } from "./glottolog";
 import { crawlELP } from "./elp";
@@ -21,7 +22,7 @@ export type ImageMediaType = "image/jpeg" | "image/png" | "image/gif" | "image/w
 export type ScanQuality = "clean" | "degraded" | "unknown";
 
 export interface VisualContent {
-  /** Raw PDF bytes as base64 — sent to Claude as a DocumentBlockParam */
+  /** Raw PDF bytes as base64 for model-capable extraction paths */
   pdf_base64?: string;
   /** Individual images (from HTML or future PDF page renders) */
   images?: {
@@ -31,7 +32,7 @@ export interface VisualContent {
   }[];
   /** True when text content is unreliable (scanned PDF, image-only source) */
   is_scan: boolean;
-  /** Quality assessment for smart model selection (clean → Haiku, degraded/unknown → Sonnet) */
+  /** Quality assessment for smart model selection */
   scan_quality?: ScanQuality;
 }
 
@@ -1327,7 +1328,7 @@ async function crawlWithStagehand(
     env: "BROWSERBASE",
     apiKey: process.env.BROWSERBASE_API_KEY,
     projectId: process.env.BROWSERBASE_PROJECT_ID,
-    model: "anthropic/claude-sonnet-4-5-20250929",
+    model: getStagehandModelConfig(),
     verbose: 0,
     browserbaseSessionCreateParams: { timeout: 120 },
   });

@@ -13,6 +13,7 @@ config({ path: ".env.local" });
 
 import { Stagehand } from "@browserbasehq/stagehand";
 import { z } from "zod";
+import { getStagehandModelConfig } from "../apis/stagehand-model";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -148,7 +149,7 @@ export async function crawlYouTube(
             viewport: { width: 1280, height: 720 },
           },
         }),
-    model: "anthropic/claude-sonnet-4-5-20250929",
+    model: getStagehandModelConfig(),
     verbose: 0,
     domSettleTimeout: 3000,
   });

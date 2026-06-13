@@ -23,7 +23,7 @@ import { SourcesList } from "./SourcesList";
 import { cn } from "@/lib/utils";
 import { getErrorMessage } from "@/lib/utils/errors";
 import { Languages, BookOpen, Network, Activity, Layers, Loader2, BookText, MessageSquare, ExternalLink, LayoutDashboard } from "lucide-react";
-import { AgentChat } from "@/components/agent-builder/AgentChat";
+import { AgentChat } from "@/components/featherless-chat/AgentChat";
 import Link from "next/link";
 
 const PAGE_SIZE = 20;
@@ -602,7 +602,7 @@ export function SearchPanel({ language, showHealthTab = true, embedded = false, 
           </motion.div>
         </TabsContent>
 
-        {/* Ask (Agent Builder) tab */}
+        {/* Ask tab */}
         <TabsContent
           value="ask"
           className="flex-1 min-h-0 mt-0 data-[state=inactive]:hidden"

@@ -1,11 +1,9 @@
 "use client";
 
 import {
-  Brain,
   Search,
   Globe,
   Database,
-  Sparkles,
   Cpu,
   Shield,
   Video,
@@ -16,12 +14,10 @@ import {
 } from "lucide-react";
 
 const SPONSORS: { name: string; icon: LucideIcon }[] = [
-  { name: "Featherless.ai", icon: Feather },
-  { name: "Anthropic", icon: Brain },
+  { name: "Featherless.ai Agents", icon: Feather },
   { name: "Elastic + JINA", icon: Search },
   { name: "Browserbase", icon: Globe },
   { name: "BrightData", icon: Database },
-  { name: "Perplexity", icon: Sparkles },
   { name: "Runpod", icon: Cpu },
   { name: "Cloudflare", icon: Shield },
   { name: "HeyGen", icon: Video },

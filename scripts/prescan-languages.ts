@@ -2,7 +2,7 @@ import { config } from "dotenv";
 config({ path: ".env.local" });
 
 import { Client } from "@elastic/elasticsearch";
-import { searchSonar, classifySourceType, DOMAIN_DENYLIST } from "../lib/apis/perplexity";
+import { searchLanguageSources, classifySourceType, DOMAIN_DENYLIST } from "../lib/apis/source-discovery";
 import { getClient } from "../lib/elastic";
 import type { LanguageEntry } from "../lib/types";
 import { getErrorMessage } from "../lib/utils/errors.js";
@@ -32,7 +32,7 @@ interface PrescanResult {
   has_elp: boolean;
   has_talking_dictionary: boolean;
   has_glottolog: boolean;
-  perplexity_sources: number;
+  featherless_sources: number;
   error?: string;
 }
 
@@ -167,14 +167,14 @@ async function scanLanguage(lang: TargetLanguage): Promise<PrescanResult> {
     has_elp: false,
     has_talking_dictionary: false,
     has_glottolog: false,
-    perplexity_sources: 0,
+    featherless_sources: 0,
   };
 
   try {
-    // Run universal resource checks and Perplexity search concurrently
-    const [universal, sonar] = await Promise.all([
+    // Run universal resource checks and Featherless source planning concurrently
+    const [universal, discovery] = await Promise.all([
       checkUniversalResources(lang),
-      searchSonar(
+      searchLanguageSources(
         `${lang.name} language online dictionary OR audio recordings OR preservation resources`,
         undefined,
         DOMAIN_DENYLIST
@@ -186,11 +186,11 @@ async function scanLanguage(lang: TargetLanguage): Promise<PrescanResult> {
     base.has_talking_dictionary = universal.has_talking_dictionary;
     base.has_glottolog = universal.has_glottolog;
 
-    // Collect Perplexity URLs for deduplication against universal resources
-    const perplexityUrls = new Set(sonar.sources.map((s) => s.url));
-    base.perplexity_sources = perplexityUrls.size;
+    // Collect model-planned URLs for deduplication against universal resources
+    const discoveryUrls = new Set(discovery.sources.map((s) => s.url));
+    base.featherless_sources = discoveryUrls.size;
 
-    // Count universal resources that Perplexity didn't already find
+    // Count universal resources that the model planner didn't already find
     let universalCount = 0;
     const wikiName = encodeURIComponent(lang.name.replace(/ /g, "_"));
     const universalUrls: [boolean, string][] = [
@@ -213,22 +213,22 @@ async function scanLanguage(lang: TargetLanguage): Promise<PrescanResult> {
     ];
 
     for (const [exists, url] of universalUrls) {
-      if (exists && !perplexityUrls.has(url)) {
+      if (exists && !discoveryUrls.has(url)) {
         universalCount++;
       }
     }
 
-    base.sources_discovered = perplexityUrls.size + universalCount;
+    base.sources_discovered = discoveryUrls.size + universalCount;
 
     // Infer has_dictionary
     base.has_dictionary =
       universal.has_talking_dictionary ||
-      sonar.sources.some(
+      discovery.sources.some(
         (s) => classifySourceType(s.url, s.description) === "dictionary"
       );
 
     // Infer has_audio
-    base.has_audio = sonar.sources.some(
+    base.has_audio = discovery.sources.some(
       (s) =>
         AUDIO_PATTERN.test(s.url) ||
         AUDIO_PATTERN.test(s.title) ||
@@ -264,7 +264,7 @@ async function main(): Promise<void> {
   console.log("\n🔍 LangSafe — Prescan Languages\n");
 
   // Validate environment
-  const requiredVars = ["ELASTIC_URL", "ELASTIC_API_KEY", "PERPLEXITY_API_KEY"];
+  const requiredVars = ["ELASTIC_URL", "ELASTIC_API_KEY", "FEATHERLESS_API_KEY"];
   for (const key of requiredVars) {
     if (!process.env[key]) {
       console.error(`❌ Missing env var: ${key}. Set it in .env.local`);
@@ -320,7 +320,7 @@ async function main(): Promise<void> {
       );
     }
 
-    // Rate limit: stay under 3 Perplexity calls/sec
+    // Rate limit model-planned source discovery calls.
     if (i < verified.length - 1) {
       await sleep(RATE_LIMIT_DELAY_MS);
     }

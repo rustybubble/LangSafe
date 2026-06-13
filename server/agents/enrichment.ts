@@ -7,7 +7,7 @@ import {
   type SourceReliability,
   type CitationReference,
 } from "../../lib/agents/enrichment.js";
-import { classifySourceType } from "../../lib/apis/perplexity.js";
+import { classifySourceType } from "../../lib/apis/source-discovery.js";
 import type { VocabularyEntry } from "../types.js";
 
 function toEnrichmentEntry(entry: VocabularyEntry): EnrichmentEntry {

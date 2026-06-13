@@ -35,7 +35,7 @@ export async function GET(
       }
     }
 
-    // 3. Generate overview (Perplexity research → Claude structuring)
+    // 3. Generate overview with Featherless.
     const overview = await generateLanguageOverview(language);
 
     // 4. Cache for 24 hours

@@ -8,6 +8,7 @@ import { config } from "dotenv";
 config({ path: ".env.local" });
 
 import { Stagehand } from "@browserbasehq/stagehand";
+import { getStagehandModelConfig } from "../lib/apis/stagehand-model.js";
 
 async function main() {
   const url = process.argv[2] || "https://www.endangeredlanguages.com/lang/4065";
@@ -24,7 +25,7 @@ async function main() {
     env: "BROWSERBASE",
     apiKey: process.env.BROWSERBASE_API_KEY,
     projectId: process.env.BROWSERBASE_PROJECT_ID,
-    model: "anthropic/claude-sonnet-4-5-20250929",
+    model: getStagehandModelConfig(),
     verbose: 0,
     browserbaseSessionCreateParams: { timeout: 120 },
   });

@@ -56,10 +56,10 @@ function extractSentence(text: string, markerStart: number): string {
 // ─── Main parser ─────────────────────────────────────────────────────────────
 
 /**
- * Parse Perplexity Sonar prose to extract and resolve [N] citation references.
+ * Parse model prose to extract and resolve [N] citation references.
  *
- * @param text    - Raw prose from Sonar (may contain [1], [2], etc.)
- * @param citations - URL array from the Perplexity API response (0-indexed)
+ * @param text    - Raw prose from a model/search response (may contain [1], [2], etc.)
+ * @param citations - URL array from the model/search response (0-indexed)
  * @returns Cleaned text with [N] stripped, plus resolved citation references
  */
 export function parseCitations(

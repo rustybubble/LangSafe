@@ -14,6 +14,7 @@ config({ path: ".env.local" });
 import { Stagehand } from "@browserbasehq/stagehand";
 import { z } from "zod";
 import type { VocabularyEntry } from "../types";
+import { getStagehandModelConfig } from "../apis/stagehand-model";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -131,7 +132,7 @@ export async function crawlUHDictionary(options?: {
     env: "BROWSERBASE",
     apiKey: process.env.BROWSERBASE_API_KEY,
     projectId: process.env.BROWSERBASE_PROJECT_ID,
-    model: "anthropic/claude-sonnet-4-5-20250929",
+    model: getStagehandModelConfig(),
     verbose: 0,
     browserbaseSessionCreateParams: {
       timeout: 600, // 10 minutes in seconds — Developer plan supports extended sessions

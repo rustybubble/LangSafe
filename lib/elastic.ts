@@ -1,6 +1,6 @@
 import { getErrorMessage } from "./utils/errors";
 import { Client } from "@elastic/elasticsearch";
-import Anthropic from "@anthropic-ai/sdk";
+import { featherlessChatText } from "./apis/featherless";
 import type {
   VocabularyEntry,
   ElasticDocument,
@@ -190,7 +190,7 @@ export function buildEmbeddingText(entry: VocabularyEntry): string {
 }
 
 // ---------------------------------------------------------------------------
-// Query expansion for cross-lingual search (Claude Haiku)
+// Query expansion for cross-lingual search (Featherless)
 // ---------------------------------------------------------------------------
 
 function buildExpansionPrompt(languageName: string): string {
@@ -227,16 +227,12 @@ async function expandQuery(query: string, languageName: string = "Unknown"): Pro
   if (cached) return cached;
 
   try {
-    const anthropic = new Anthropic({ maxRetries: 2 });
-    const msg = await anthropic.messages.create({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 150,
-      system: [{ type: "text" as const, text: buildExpansionPrompt(languageName), cache_control: { type: "ephemeral" } }],
-      messages: [{ role: "user", content: query }],
+    const expanded = await featherlessChatText({
+      system: buildExpansionPrompt(languageName),
+      prompt: query,
+      maxTokens: 150,
+      temperature: 0,
     });
-
-    const expanded =
-      msg.content[0].type === "text" ? msg.content[0].text.trim() : "";
     const result = expanded ? `${query} ${expanded}` : query;
 
     expandCacheSet(cacheKey, result);

@@ -1,13 +1,13 @@
 import { getErrorMessage } from "../utils/errors";
-import Anthropic from "@anthropic-ai/sdk";
-import { searchSonar, generateSearchQueries, classifySourceType, DOMAIN_DENYLIST } from "../apis/perplexity.js";
+import { FeatherlessClient, Featherless } from "../apis/featherless.js";
+import { searchLanguageSources, generateSearchQueries, classifySourceType, DOMAIN_DENYLIST } from "../apis/source-discovery.js";
 import { getPrioritySources, type PrioritySource } from "./priority-sources.js";
 import { brightdataSearch, brightdataScrapeMarkdown, brightDataMCPConfigured } from "../apis/brightdata-mcp.js";
 import type { SourceType, LanguageMetadata } from "../types.js";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-export type DiscoveryVia = "perplexity" | "serp_api" | "priority";
+export type DiscoveryVia = "featherless" | "serp_api" | "priority";
 
 export interface DiscoverySource {
   url: string;
@@ -22,13 +22,13 @@ export interface DiscoveryResult {
   total_searches: number;
   total_reported: number;
   serp_api_searches: number;
-  perplexity_searches: number;
+  featherless_searches: number;
   web_unlocker_scrapes: number;
 }
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const MODEL = "claude-haiku-4-5-20251001";
+const MODEL = process.env.FEATHERLESS_MODEL || "Qwen/Qwen2.5-7B-Instruct";
 const MAX_TURNS = 12;
 const DISCOVERY_TIMEOUT_MS = 150_000; // 2.5 minutes — allows link-following
 
@@ -77,7 +77,7 @@ function buildSystemPrompt(meta: LanguageMetadata): string {
 
 TOOL SELECTION — GEO-TARGETED MODE (BrightData SERP API + Web Unlocker available):
 - **serp_api_search** (BrightData SERP API): PRIMARY search tool. Use this for your first searches — it searches from inside ${country}, surfacing local university archives, government digitization projects, and regional forums that global search engines miss. Always pass the country parameter ("${country}").
-- **search_web** (Perplexity): SECONDARY. Use after SERP API searches to supplement with English-language academic and international linguistic results.
+- **search_web** (Featherless planner): SECONDARY. Use after SERP API searches to supplement with likely English-language academic and international linguistic resources.
 - **web_unlocker_scrape** (BrightData Web Unlocker): Use to verify a page contains vocabulary data before reporting it, or when a page is CAPTCHA-protected or geo-blocked.
 
 Start with serp_api_search using geo-targeted queries in the contact language, then broaden with search_web.`;
@@ -87,7 +87,7 @@ Start with serp_api_search using geo-targeted queries in the contact language, t
     return `${SYSTEM_PROMPT_BASE}
 
 TOOL SELECTION (BrightData SERP API + Web Unlocker available):
-- **search_web** (Perplexity): Default for English-language academic and linguistic searches.
+- **search_web** (Featherless planner): Default for English-language academic and linguistic discovery planning.
 - **serp_api_search** (BrightData SERP API): Use for non-English queries (e.g., in the contact language), geo-targeted searches, or when search_web returns poor results. Supports country targeting.
 - **web_unlocker_scrape** (BrightData Web Unlocker): Use to preview a page's content before reporting it (helps verify it actually contains vocabulary data), or when a page might be CAPTCHA-protected or geo-blocked.`;
   }
@@ -99,7 +99,7 @@ Use search_web to run search queries. Review the results carefully and report_so
 
 // ─── Tool definitions ────────────────────────────────────────────────────────
 
-const BASE_TOOLS: Anthropic.Tool[] = [
+const BASE_TOOLS: Featherless.Tool[] = [
   {
     name: "search_web",
     description:
@@ -168,7 +168,7 @@ const BASE_TOOLS: Anthropic.Tool[] = [
   },
 ];
 
-const BRIGHTDATA_TOOLS: Anthropic.Tool[] = [
+const BRIGHTDATA_TOOLS: Featherless.Tool[] = [
   {
     name: "serp_api_search",
     description:
@@ -207,7 +207,7 @@ const BRIGHTDATA_TOOLS: Anthropic.Tool[] = [
   },
 ];
 
-function getTools(meta: LanguageMetadata): Anthropic.Tool[] {
+function getTools(meta: LanguageMetadata): Featherless.Tool[] {
   if (brightDataMCPConfigured()) {
     const bdTools = BRIGHTDATA_TOOLS.map((t) => ({ ...t }));
     // Hint the recommended country code in the tool description
@@ -311,7 +311,7 @@ function buildUserPrompt(
     `Find all digital resources for the endangered language: **${meta.language_name}** (ISO 639-3: ${meta.language_code}).`
   );
 
-  // Optional metadata lines — gives Claude context for smarter searching
+  // Optional metadata lines — gives the model context for smarter searching
   if (meta.native_name) {
     parts.push(`Native name: ${meta.native_name}.`);
   }
@@ -369,16 +369,16 @@ export async function runDiscoveryAgent(
   onSourceFound: (source: DiscoverySource) => void,
   externalSignal?: AbortSignal
 ): Promise<DiscoveryResult> {
-  const client = new Anthropic({ maxRetries: 3 });
+  const client = new FeatherlessClient({ maxRetries: 3 });
   const tools = getTools(meta);
   const systemPrompt = buildSystemPrompt(meta);
   const reportedUrls = new Set<string>();
   const sources: DiscoverySource[] = [];
   let searchCount = 0;
   let serpApiSearchCount = 0;
-  let perplexitySearchCount = 0;
+  let featherlessSearchCount = 0;
   let webUnlockerScrapeCount = 0;
-  let lastSearchTool: DiscoveryVia = "perplexity";
+  let lastSearchTool: DiscoveryVia = "featherless";
 
   // Self-managed timeout: discovery gets 90s max, then returns what it has
   const ac = new AbortController();
@@ -445,10 +445,10 @@ export async function runDiscoveryAgent(
       }
     }
 
-    // ── Phase 2: Build Claude prompt with metadata context ──
+    // ── Phase 2: Build Featherless prompt with metadata context ──
     const userPrompt = buildUserPrompt(meta, seedQueries, prioritySources, sources);
 
-    const messages: Anthropic.MessageParam[] = [
+    const messages: Featherless.MessageParam[] = [
       { role: "user", content: userPrompt },
     ];
 
@@ -458,7 +458,7 @@ export async function runDiscoveryAgent(
         break;
       }
 
-      let response: Anthropic.Message;
+      let response: Featherless.Message;
       try {
         response = await client.messages.create({
           model: MODEL,
@@ -469,20 +469,20 @@ export async function runDiscoveryAgent(
         }, { signal });
       } catch (err) {
         if (signal.aborted) {
-          console.log(`[DiscoveryAgent] Timeout during Claude API call, returning ${sources.length} sources`);
+          console.log(`[DiscoveryAgent] Timeout during Featherless API call, returning ${sources.length} sources`);
           break;
         }
-        console.error(`[DiscoveryAgent] Claude API error on turn ${turn}: ${getErrorMessage(err)}`);
+        console.error(`[DiscoveryAgent] Featherless API error on turn ${turn}: ${getErrorMessage(err)}`);
         break;
       }
 
-      // Check if Claude is done (no tool calls)
+      // Check if the model is done (no tool calls)
       const hasToolUse = response.content.some((block) => block.type === "tool_use");
       if (!hasToolUse || response.stop_reason === "end_turn") {
         break;
       }
 
-      const toolResults: Anthropic.ToolResultBlockParam[] = [];
+      const toolResults: Featherless.ToolResultBlockParam[] = [];
 
       for (const block of response.content) {
         if (block.type !== "tool_use") continue;
@@ -493,12 +493,12 @@ export async function runDiscoveryAgent(
         if (block.name === "search_web") {
           const query = input.query as string;
           searchCount++;
-          perplexitySearchCount++;
-          lastSearchTool = "perplexity";
+          featherlessSearchCount++;
+          lastSearchTool = "featherless";
 
           let resultText: string;
           try {
-            const result = await searchSonar(query, signal, DOMAIN_DENYLIST);
+            const result = await searchLanguageSources(query, signal, DOMAIN_DENYLIST);
             if (result.sources.length === 0) {
               resultText = "No results found for this query. Try a different search.";
             } else {
@@ -650,7 +650,7 @@ export async function runDiscoveryAgent(
     total_searches: searchCount,
     total_reported: sources.length,
     serp_api_searches: serpApiSearchCount,
-    perplexity_searches: perplexitySearchCount,
+    featherless_searches: featherlessSearchCount,
     web_unlocker_scrapes: webUnlockerScrapeCount,
   };
 }

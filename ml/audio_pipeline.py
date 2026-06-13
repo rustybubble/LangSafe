@@ -1,7 +1,7 @@
 """
 LangSafe — Audio Processing Pipeline
 Downloads YouTube audio, chunks it, uploads to R2, transcribes via RunPod Whisper,
-and corrects transcription for endangered languages using Claude.
+and corrects transcription for endangered languages using Featherless.
 """
 
 import os
@@ -34,7 +34,9 @@ logger = logging.getLogger("audio_pipeline")
 # ---------------------------------------------------------------------------
 RUNPOD_ENDPOINT_ID = os.environ.get("RUNPOD_ENDPOINT_ID", "")
 RUNPOD_API_KEY = os.environ.get("RUNPOD_API_KEY", "")
-ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
+FEATHERLESS_API_KEY = os.environ.get("FEATHERLESS_API_KEY", "")
+FEATHERLESS_MODEL = os.environ.get("FEATHERLESS_MODEL", "Qwen/Qwen2.5-7B-Instruct")
+FEATHERLESS_CHAT_URL = "https://api.featherless.ai/v1/chat/completions"
 CLOUDFLARE_WORKER_URL = os.environ.get(
     "CLOUDFLARE_WORKER_URL", "https://LangSafe-worker.lvalsote.workers.dev"
 )
@@ -545,7 +547,7 @@ def transcribe_chunks(
 
 
 # ---------------------------------------------------------------------------
-# Function 5: Correct Transcription via Claude (language-generic)
+# Function 5: Correct Transcription via Featherless (language-generic)
 # ---------------------------------------------------------------------------
 
 
@@ -556,7 +558,7 @@ def correct_transcription(
     known_vocabulary: Optional[list] = None,
 ) -> str:
     """
-    Use Claude to correct a proxy-language transcription to the actual target language.
+    Use Featherless to correct a proxy-language transcription to the actual target language.
 
     Whisper transcribes endangered language speech using the closest major language
     (the contact language). This function identifies and corrects target-language-specific
@@ -571,13 +573,9 @@ def correct_transcription(
     Returns:
         Corrected transcript with target-language-specific annotations.
     """
-    if not ANTHROPIC_API_KEY:
-        logger.warning("ANTHROPIC_API_KEY not set, skipping transcription correction")
+    if not FEATHERLESS_API_KEY:
+        logger.warning("FEATHERLESS_API_KEY not set, skipping transcription correction")
         return transcript
-
-    import anthropic
-
-    client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
     vocab_section = ""
     if known_vocabulary:
@@ -608,16 +606,36 @@ def correct_transcription(
         f"with its {contact_language} equivalent."
     )
 
-    logger.info(f"Sending transcript to Claude for {language_name} correction (proxy: {contact_language})")
+    logger.info(f"Sending transcript to Featherless for {language_name} correction (proxy: {contact_language})")
 
-    response = client.messages.create(
-        model="claude-sonnet-4-5-20250929",
-        max_tokens=4096,
-        system=system_prompt,
-        messages=[{"role": "user", "content": user_prompt}],
+    response = requests.post(
+        FEATHERLESS_CHAT_URL,
+        headers={
+            "Authorization": f"Bearer {FEATHERLESS_API_KEY}",
+            "Content-Type": "application/json",
+        },
+        json={
+            "model": FEATHERLESS_MODEL,
+            "max_tokens": 4096,
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+        },
+        timeout=90,
     )
+    response.raise_for_status()
 
-    corrected = response.content[0].text
+    payload = response.json()
+    corrected = (
+        payload.get("choices", [{}])[0]
+        .get("message", {})
+        .get("content", "")
+        .strip()
+    )
+    if not corrected:
+        logger.warning("Featherless returned an empty correction; using raw transcript")
+        return transcript
     logger.info(f"{language_name} correction complete ({len(corrected)} chars)")
     return corrected
 
@@ -893,7 +911,7 @@ if __name__ == "__main__":
         help="Known vocabulary words for correction guidance",
     )
     parser.add_argument(
-        "--skip-correction", action="store_true", help="Skip Claude transcription correction step"
+        "--skip-correction", action="store_true", help="Skip Featherless transcription correction step"
     )
 
     args = parser.parse_args()

@@ -1,224 +1,117 @@
-import Anthropic from "@anthropic-ai/sdk";
-import type { LanguageEntry, LanguageOverview } from "../types";
+import type { LanguageEntry, LanguageOverview, ExternalLinkType } from "../types";
 import { ENDANGERMENT_LABELS } from "../types";
+import { featherlessChatText, extractJson } from "./featherless";
 
-// ── Constants ───────────────────────────────────────────────────────────────
+const OVERVIEW_MAX_TOKENS = 4096;
 
-const PERPLEXITY_URL = "https://api.perplexity.ai/chat/completions";
-const PERPLEXITY_MODEL = "sonar";
-const PERPLEXITY_MAX_TOKENS = 4096;
-const PERPLEXITY_TIMEOUT_MS = 25_000;
+const OVERVIEW_SYSTEM_PROMPT = `You are a careful linguist writing concise endangered-language profiles for LangSafe.
 
-const CLAUDE_MODEL = "claude-haiku-4-5-20251001";
-const CLAUDE_MAX_TOKENS = 4096;
+Return ONLY valid JSON matching this TypeScript shape:
+{
+  "summary": "2-3 paragraphs grounded in the supplied metadata and clearly marked uncertainties",
+  "linguistic_features": {
+    "writing_system": "string if known",
+    "phonology": "string if known",
+    "word_order": "string if known",
+    "morphological_type": "string if known",
+    "notable_features": ["short feature strings"]
+  },
+  "demographics": {
+    "speaker_count_detail": "string if known",
+    "age_distribution": "string if known",
+    "geographic_distribution": "string if known",
+    "revitalization_efforts": "string if known"
+  },
+  "external_links": [
+    { "url": "https://...", "title": "string", "type": "wikipedia|glottolog|elp|elar|ethnologue|other" }
+  ]
+}
 
-// ── Perplexity research step ────────────────────────────────────────────────
+Do not fabricate precise facts. If the supplied metadata is incomplete, say what is unknown instead of inventing details.`;
 
-const RESEARCH_SYSTEM_PROMPT = `You are an expert linguist and ethnographer specializing in endangered and minority languages. Research the given language comprehensively, drawing on academic sources, language archives, and documentation projects.
-
-Cover the following areas:
-1. **Overview**: History, where it is spoken, cultural significance, why it is endangered
-2. **Linguistic Features**: Writing system (if any), phonological inventory, word order (SOV, SVO, etc.), morphological type (agglutinative, isolating, polysynthetic, etc.), any notably unique or interesting features
-3. **Speaker Demographics**: Current speaker estimates, age distribution of speakers, geographic distribution, whether there are revitalization or documentation efforts underway
-4. **Key Resources**: URLs to Wikipedia articles, Glottolog pages, Endangered Languages Project entries, ELAR archives, or other significant reference pages for this language
-
-Be thorough and factual. Include specific details where available. If information is scarce, say so rather than speculating.`;
-
-function buildResearchPrompt(language: LanguageEntry): string {
+function buildOverviewPrompt(language: LanguageEntry): string {
   const parts = [
-    `Research the language: **${language.name}**`,
-    `- ISO 639-3 code: ${language.iso_code}`,
-    `- Glottocode: ${language.glottocode}`,
-    `- Language family: ${language.language_family}`,
-    `- Macroarea: ${language.macroarea}`,
+    `Language: ${language.name}`,
+    `ISO 639-3 code: ${language.iso_code || "unknown"}`,
+    `Glottocode: ${language.glottocode}`,
+    `Language family: ${language.language_family || "unknown"}`,
+    `Macroarea: ${language.macroarea || "unknown"}`,
+    `Endangerment status: ${ENDANGERMENT_LABELS[language.endangerment_status] || language.endangerment_status}`,
   ];
 
   if (language.countries?.length) {
-    parts.push(`- Countries: ${language.countries.join(", ")}`);
+    parts.push(`Countries: ${language.countries.join(", ")}`);
+  }
+  if (language.speaker_count != null) {
+    parts.push(
+      `Estimated speakers: ${language.speaker_count === 0 ? "No living speakers listed" : `about ${language.speaker_count.toLocaleString()}`}`
+    );
+  }
+  if (language.alternate_names?.length) {
+    parts.push(`Alternate names: ${language.alternate_names.slice(0, 8).join(", ")}`);
   }
 
   parts.push(
-    `- Endangerment status: ${ENDANGERMENT_LABELS[language.endangerment_status] || language.endangerment_status}`
+    "\nCreate an overview suitable for a language detail page. Include likely reference links only for stable public catalog/search pages when exact article URLs are not guaranteed."
   );
-
-  if (language.speaker_count != null) {
-    parts.push(
-      `- Estimated speakers: ${language.speaker_count === 0 ? "No living speakers (extinct)" : `~${language.speaker_count.toLocaleString()}`}`
-    );
-  }
-
-  if (language.alternate_names?.length) {
-    parts.push(`- Also known as: ${language.alternate_names.slice(0, 5).join(", ")}`);
-  }
 
   return parts.join("\n");
 }
 
-async function researchLanguage(language: LanguageEntry): Promise<string> {
-  const apiKey = process.env.PERPLEXITY_API_KEY;
-  if (!apiKey) throw new Error("PERPLEXITY_API_KEY is not set");
-
-  const res = await fetch(PERPLEXITY_URL, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: PERPLEXITY_MODEL,
-      messages: [
-        { role: "system", content: RESEARCH_SYSTEM_PROMPT },
-        { role: "user", content: buildResearchPrompt(language) },
-      ],
-      max_tokens: PERPLEXITY_MAX_TOKENS,
-    }),
-    signal: AbortSignal.timeout(PERPLEXITY_TIMEOUT_MS),
-  });
-
-  if (!res.ok) {
-    const body = await res.text().catch(() => "");
-    throw new Error(`Perplexity API ${res.status}: ${body}`);
-  }
-
-  const data = (await res.json()) as {
-    choices: { message: { content: string } }[];
-  };
-
-  return data.choices[0]?.message?.content || "";
+function normalizeLinkType(type: unknown): ExternalLinkType {
+  const raw = String(type || "other");
+  return ["wikipedia", "glottolog", "elp", "elar", "ethnologue", "other"].includes(raw)
+    ? raw as ExternalLinkType
+    : "other";
 }
 
-// ── Claude structuring step ─────────────────────────────────────────────────
-
-const STRUCTURE_TOOL: Anthropic.Tool = {
-  name: "save_language_overview",
-  description:
-    "Save a structured language overview extracted from research text. Include all available information.",
-  input_schema: {
-    type: "object" as const,
-    properties: {
-      summary: {
-        type: "string",
-        description:
-          "2-3 paragraph overview of the language covering its history, where it is spoken, cultural significance, and endangerment context. Write in clear, engaging prose.",
-      },
-      linguistic_features: {
-        type: "object",
-        properties: {
-          writing_system: {
-            type: "string",
-            description: "Writing system used (e.g., Latin script, no standard orthography, etc.)",
-          },
-          phonology: {
-            type: "string",
-            description: "Brief description of the sound system — notable consonants, vowels, tones, etc.",
-          },
-          word_order: {
-            type: "string",
-            description: "Typical word order (e.g., SOV, SVO, VSO, free)",
-          },
-          morphological_type: {
-            type: "string",
-            description: "Morphological typology (e.g., agglutinative, isolating, polysynthetic, fusional)",
-          },
-          notable_features: {
-            type: "array",
-            items: { type: "string" },
-            description: "List of linguistically notable or unique features",
-          },
-        },
-      },
-      demographics: {
-        type: "object",
-        properties: {
-          speaker_count_detail: {
-            type: "string",
-            description: "Detailed speaker count information with source/date if available",
-          },
-          age_distribution: {
-            type: "string",
-            description: "Age distribution of speakers (e.g., mostly elderly, intergenerational transmission status)",
-          },
-          geographic_distribution: {
-            type: "string",
-            description: "Where speakers are located geographically",
-          },
-          revitalization_efforts: {
-            type: "string",
-            description: "Any language revitalization, documentation, or preservation efforts underway",
-          },
-        },
-      },
-      external_links: {
-        type: "array",
-        items: {
-          type: "object",
-          properties: {
-            url: { type: "string", description: "Full URL to the resource" },
-            title: {
-              type: "string",
-              description: "Descriptive title for the link",
-            },
-            type: {
-              type: "string",
-              enum: ["wikipedia", "glottolog", "elp", "elar", "ethnologue", "other"],
-              description: "Type of resource",
-            },
-          },
-          required: ["url", "title", "type"],
-        },
-        description:
-          "Links to key reference pages. Always include Glottolog and Wikipedia if they exist.",
-      },
-    },
-    required: ["summary", "linguistic_features", "demographics", "external_links"],
-  },
-};
-
-async function structureOverview(
-  researchText: string,
-  language: LanguageEntry
-): Promise<LanguageOverview> {
-  const client = new Anthropic({ maxRetries: 3 });
-
-  const response = await client.messages.create({
-    model: CLAUDE_MODEL,
-    max_tokens: CLAUDE_MAX_TOKENS,
-    messages: [
-      {
-        role: "user",
-        content: `Below is research about the ${language.name} language (${language.iso_code}, ${language.glottocode}). Extract and structure the information using the save_language_overview tool. Only include facts present in the research text — do not fabricate information.\n\n---\n\n${researchText}`,
-      },
-    ],
-    tools: [STRUCTURE_TOOL],
-    tool_choice: { type: "tool", name: "save_language_overview" },
-  });
-
-  const toolBlock = response.content.find(
-    (b): b is Anthropic.ToolUseBlock => b.type === "tool_use"
-  );
-
-  if (!toolBlock) {
-    throw new Error("Claude did not return a tool_use block");
-  }
-
-  const input = toolBlock.input as Omit<LanguageOverview, "generated_at">;
+function normalizeOverview(raw: unknown): Omit<LanguageOverview, "generated_at"> {
+  const value = raw as Record<string, any>;
+  const features = value.linguistic_features || {};
+  const demographics = value.demographics || {};
+  const links = Array.isArray(value.external_links) ? value.external_links : [];
 
   return {
-    ...input,
-    generated_at: new Date().toISOString(),
+    summary: String(value.summary || "No overview is available yet."),
+    linguistic_features: {
+      writing_system: features.writing_system ? String(features.writing_system) : undefined,
+      phonology: features.phonology ? String(features.phonology) : undefined,
+      word_order: features.word_order ? String(features.word_order) : undefined,
+      morphological_type: features.morphological_type ? String(features.morphological_type) : undefined,
+      notable_features: Array.isArray(features.notable_features)
+        ? features.notable_features.map(String).filter(Boolean)
+        : [],
+    },
+    demographics: {
+      speaker_count_detail: demographics.speaker_count_detail ? String(demographics.speaker_count_detail) : undefined,
+      age_distribution: demographics.age_distribution ? String(demographics.age_distribution) : undefined,
+      geographic_distribution: demographics.geographic_distribution ? String(demographics.geographic_distribution) : undefined,
+      revitalization_efforts: demographics.revitalization_efforts ? String(demographics.revitalization_efforts) : undefined,
+    },
+    external_links: links
+      .map((link: Record<string, unknown>) => ({
+        url: String(link.url || ""),
+        title: String(link.title || link.url || ""),
+        type: normalizeLinkType(link.type),
+      }))
+      .filter((link) => /^https?:\/\//i.test(link.url)),
   };
 }
-
-// ── Public API ──────────────────────────────────────────────────────────────
 
 export async function generateLanguageOverview(
   language: LanguageEntry
 ): Promise<LanguageOverview> {
-  // Step 1: Perplexity researches the language
-  const researchText = await researchLanguage(language);
+  const text = await featherlessChatText({
+    system: OVERVIEW_SYSTEM_PROMPT,
+    prompt: buildOverviewPrompt(language),
+    maxTokens: OVERVIEW_MAX_TOKENS,
+    temperature: 0.15,
+  });
 
-  // Step 2: Claude structures the research into typed JSON
-  const overview = await structureOverview(researchText, language);
+  const overview = normalizeOverview(extractJson(text));
 
-  return overview;
+  return {
+    ...overview,
+    generated_at: new Date().toISOString(),
+  };
 }

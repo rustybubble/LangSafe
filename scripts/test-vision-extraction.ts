@@ -1,8 +1,8 @@
 /**
- * Test script for Vision API extraction from scanned PDFs.
+ * Test script for scanned/OCR extraction from PDFs.
  *
  * Two modes:
- *   1. --synthetic : Creates a minimal scanned PDF in-memory and tests the vision path
+ *   1. --synthetic : Creates a minimal scanned-PDF scenario and tests the OCR path
  *   2. [pdf-url]   : Downloads a real PDF and runs through the full pipeline
  *
  * Usage:
@@ -21,13 +21,13 @@ import {
 import { getErrorMessage } from "../lib/utils/errors.js";
 
 // ---------------------------------------------------------------------------
-// Test 1: Synthetic — bypass crawler, test vision extraction directly
+// Test 1: Synthetic — bypass crawler, test scanned-content extraction directly
 // ---------------------------------------------------------------------------
 
 async function testSyntheticVision() {
-  console.log("\n=== Synthetic Vision Test ===\n");
-  console.log("Creating a fake scanned PDF scenario to test the vision extraction path.\n");
-  console.log("This downloads a real scanned page image and sends it to Claude Vision.\n");
+  console.log("\n=== Synthetic Scanned-Content Test ===\n");
+  console.log("Creating a fake scanned PDF scenario to test the OCR extraction path.\n");
+  console.log("This generates a simulated dictionary page and sends extracted text to Featherless.\n");
 
   // Generate a simple SVG dictionary page and convert to PNG via sharp (if available)
   // or fall back to fetching a real scanned image
@@ -78,10 +78,8 @@ async function testSyntheticVision() {
     console.log(`✓ Generated ${Math.round(pngBuffer.length / 1024)}KB PNG from SVG dictionary page\n`);
   } catch {
     // sharp not available — encode SVG as PNG-like data
-    // Actually, Claude Vision doesn't support SVG. Let's try sending a JPEG/PNG placeholder.
     console.log("sharp not available — encoding SVG directly for test...");
-    // We can't send raw SVG to Claude Vision. Let's use a minimal valid PNG.
-    // Instead, let's try fetch from a reliable source as last resort
+    // Use a placeholder image as a visual attachment while OCR text carries the test content.
     try {
       const res = await fetch("https://picsum.photos/600/800", {
         headers: { "User-Agent": "LangSafe/1.0" },
@@ -110,14 +108,19 @@ async function testSyntheticVision() {
     is_scan: true,
   };
 
-  console.log("Sending scanned dictionary page to Claude Vision...\n");
+  const simulatedOcrText = svgDictionaryPage
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  console.log("Sending scanned dictionary OCR text to Featherless...\n");
 
   const allEntries: ExtractionEntry[] = [];
   const start = Date.now();
 
   try {
     const result = await runExtractionAgent(
-      "[Scanned dictionary page — image content below]",
+      `[Scanned dictionary page OCR]\n\n${simulatedOcrText}`,
       "https://example.com/jejueo-dictionary/page47.pdf",
       "A Dictionary of the Jejueo Language — Page 47",
       "dictionary",
@@ -145,7 +148,7 @@ async function testSyntheticVision() {
     );
 
     const elapsed = Date.now() - start;
-    console.log(`\n✓ Vision extraction completed in ${(elapsed / 1000).toFixed(1)}s`);
+    console.log(`\n✓ Scanned-content extraction completed in ${(elapsed / 1000).toFixed(1)}s`);
     console.log(`  Entries extracted: ${result.entries.length}`);
     console.log(`  Grammar patterns: ${result.grammar_patterns.length}`);
     console.log(`  Total saved: ${result.total_saved}`);
@@ -164,13 +167,13 @@ async function testSyntheticVision() {
         console.log(`    ... and ${result.entries.length - 8} more`);
       }
     } else {
-      console.log("\n  ⚠ No entries extracted — Claude may not have found vocabulary on this page.");
+      console.log("\n  ⚠ No entries extracted — the model may not have found vocabulary on this page.");
     }
 
     return true;
   } catch (err) {
     const elapsed = Date.now() - start;
-    console.error(`✗ Vision extraction failed in ${(elapsed / 1000).toFixed(1)}s: ${getErrorMessage(err)}`);
+    console.error(`✗ Scanned-content extraction failed in ${(elapsed / 1000).toFixed(1)}s: ${getErrorMessage(err)}`);
     return false;
   }
 }
@@ -203,19 +206,19 @@ async function testRealPdf(url: string) {
   console.log(`  Text content: ${result.content.length} chars`);
 
   if (result.visual_content) {
-    console.log(`  ✓ SCANNED PDF DETECTED — Vision path triggered`);
+    console.log(`  ✓ SCANNED PDF DETECTED — OCR/scanned-content path triggered`);
     console.log(`    is_scan: ${result.visual_content.is_scan}`);
     if (result.visual_content.pdf_base64) {
       const sizeKB = Math.round((result.visual_content.pdf_base64.length * 3) / 4 / 1024);
       console.log(`    PDF size: ${sizeKB}KB`);
     }
   } else {
-    console.log(`  Text PDF — Vision not needed (pdf-parse got ${result.content.length} chars)`);
+    console.log(`  Text PDF — scanned-content path not needed (pdf-parse got ${result.content.length} chars)`);
     return;
   }
 
   // Step 2: Extract
-  console.log("\nStep 2: Vision extraction...");
+  console.log("\nStep 2: Scanned-content extraction...");
   const allEntries: ExtractionEntry[] = [];
   const extractStart = Date.now();
 
@@ -259,11 +262,11 @@ async function testRealPdf(url: string) {
 
 async function main() {
   console.log("╔══════════════════════════════════════════════════════╗");
-  console.log("║  Vision API Extraction Test                         ║");
+  console.log("║  Featherless Scanned-Content Extraction Test        ║");
   console.log("╚══════════════════════════════════════════════════════╝");
 
-  if (!process.env.ANTHROPIC_API_KEY) {
-    console.error("✗ ANTHROPIC_API_KEY not set. Add it to .env.local");
+  if (!process.env.FEATHERLESS_API_KEY) {
+    console.error("✗ FEATHERLESS_API_KEY not set. Add it to .env.local");
     process.exit(1);
   }
 

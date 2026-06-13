@@ -24,7 +24,6 @@
     "dev:all": "concurrently -n next,ws,ml -c blue,green,magenta \"npm run dev\" \"npm run server\" \"npm run ml\""
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.74.0",
     "@browserbasehq/stagehand": "^3.0.8",
     "@elastic/elasticsearch": "^9.3.1",
     "@modelcontextprotocol/sdk": "^1.26.0",

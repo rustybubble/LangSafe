@@ -23,6 +23,7 @@ config({ path: ".env.local" });
 import { Stagehand } from "@browserbasehq/stagehand";
 import { z } from "zod";
 import { getErrorMessage } from "../lib/utils/errors.js";
+import { getStagehandModelConfig } from "../lib/apis/stagehand-model.js";
 
 // ── Config ──────────────────────────────────────────────────────────────────
 
@@ -73,7 +74,7 @@ async function main() {
     env: "BROWSERBASE",
     apiKey: process.env.BROWSERBASE_API_KEY,
     projectId: process.env.BROWSERBASE_PROJECT_ID,
-    model: "anthropic/claude-sonnet-4-5-20250929",
+    model: getStagehandModelConfig(),
     verbose: 0,
     browserbaseSessionCreateParams: { timeout: 120 },
   });

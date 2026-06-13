@@ -1,6 +1,6 @@
 import { getErrorMessage } from "../utils/errors";
 import { parseCitations, type CitationReference } from "../utils/citations.js";
-import { DOMAIN_DENYLIST } from "../apis/perplexity.js";
+import { featherlessChatText } from "../apis/featherless.js";
 
 export type { CitationReference };
 
@@ -29,11 +29,9 @@ export interface EnrichmentResult {
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const PERPLEXITY_URL = "https://api.perplexity.ai/chat/completions";
-const MODEL = "sonar";
 const MAX_TOKENS = 1024;
 const TIMEOUT_MS = 15_000;
-const MAX_SONAR_CALLS = 10;
+const MAX_FEATHERLESS_CALLS = 10;
 const MAX_CULTURAL = 7;
 const MAX_RELIABILITY = 3;
 
@@ -50,53 +48,25 @@ const HIGH_CULTURAL_DOMAINS = new Set([
   "geography",
 ]);
 
-// ─── Sonar query helper (prose-mode, no JSON parsing) ────────────────────────
+// ─── Featherless query helper (prose-mode, no JSON parsing) ──────────────────
 
-interface SonarProseResult {
+interface FeatherlessProseResult {
   text: string;
   citations: string[];
 }
 
-async function querySonar(prompt: string, languageName: string): Promise<SonarProseResult> {
-  const apiKey = process.env.PERPLEXITY_API_KEY;
-  if (!apiKey) {
-    throw new Error("PERPLEXITY_API_KEY is not set");
-  }
-
-  const res = await fetch(PERPLEXITY_URL, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      messages: [
-        {
-          role: "system",
-          content: `You are a knowledgeable expert on the ${languageName} language, its cultural context, and endangered language preservation. Provide concise, factual responses.`,
-        },
-        { role: "user", content: prompt },
-      ],
-      max_tokens: MAX_TOKENS,
-      search_domain_filter: DOMAIN_DENYLIST,
-    }),
+async function queryFeatherless(prompt: string, languageName: string): Promise<FeatherlessProseResult> {
+  const text = await featherlessChatText({
+    system: `You are a knowledgeable expert on the ${languageName} language, its cultural context, and endangered language preservation. Provide concise, careful responses. If a fact is uncertain, say so.`,
+    prompt,
+    maxTokens: MAX_TOKENS,
+    temperature: 0.2,
     signal: AbortSignal.timeout(TIMEOUT_MS),
   });
 
-  if (!res.ok) {
-    const body = await res.text().catch(() => "");
-    throw new Error(`Perplexity API ${res.status}: ${body}`);
-  }
-
-  const data = (await res.json()) as {
-    choices: { message: { content: string } }[];
-    citations?: string[];
-  };
-
   return {
-    text: data.choices[0]?.message?.content || "",
-    citations: data.citations || [],
+    text,
+    citations: [],
   };
 }
 
@@ -151,12 +121,12 @@ export async function runEnrichmentAgent(
   const culturalBudget = Math.min(
     MAX_CULTURAL,
     entries.length,
-    MAX_SONAR_CALLS
+    MAX_FEATHERLESS_CALLS
   );
   const reliabilityBudget = Math.min(
     MAX_RELIABILITY,
     sourceUrls.length,
-    MAX_SONAR_CALLS - culturalBudget
+    MAX_FEATHERLESS_CALLS - culturalBudget
   );
 
   onProgress(
@@ -168,7 +138,7 @@ export async function runEnrichmentAgent(
   const selectedEntries = selectEntries(entries, culturalBudget);
 
   for (const entry of selectedEntries) {
-    if (callsUsed >= MAX_SONAR_CALLS) break;
+    if (callsUsed >= MAX_FEATHERLESS_CALLS) break;
 
     onProgress(
       `Enriching '${entry.headword_native}' with cultural context...`,
@@ -180,15 +150,15 @@ export async function runEnrichmentAgent(
         .map((d) => d.text)
         .join("; ");
 
-      const sonarResult = await querySonar(
+      const modelResult = await queryFeatherless(
         `Cultural significance and etymology of the ${languageName} word "${entry.headword_native}" (${entry.headword_romanized}), meaning: ${defText}. Provide historical context, cultural connections, and any traditional or regional significance. Be concise (2-3 sentences).`,
         languageName
       );
       callsUsed++;
 
-      if (sonarResult.text) {
+      if (modelResult.text) {
         // Parse inline [N] citations into structured references
-        const parsed = parseCitations(sonarResult.text, sonarResult.citations);
+        const parsed = parseCitations(modelResult.text, modelResult.citations);
 
         // Trim to ~500 chars if very long
         const culturalContext =
@@ -226,7 +196,7 @@ export async function runEnrichmentAgent(
   );
 
   for (const source of sourcesToScore) {
-    if (callsUsed >= MAX_SONAR_CALLS) break;
+    if (callsUsed >= MAX_FEATHERLESS_CALLS) break;
 
     onProgress(
       `Scoring reliability of '${source.title}'...`,
@@ -234,14 +204,14 @@ export async function runEnrichmentAgent(
     );
 
     try {
-      const sonarResult = await querySonar(
+      const modelResult = await queryFeatherless(
         `How authoritative is ${source.url} as a linguistic resource for the ${languageName} language? Who created it? Is it peer-reviewed, government-backed, or community-created? Answer in 2-3 sentences.`,
         languageName
       );
       callsUsed++;
 
       // Clean [N] markers from assessment text
-      const parsed = parseCitations(sonarResult.text, sonarResult.citations);
+      const parsed = parseCitations(modelResult.text, modelResult.citations);
       const assessmentText = parsed.cleaned_text;
 
       const reliabilityScore = scoreReliability(assessmentText);

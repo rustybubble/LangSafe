@@ -118,7 +118,7 @@ export async function runExtractionAgent(
       );
 
       // Step 3: Verification pass — check headword appears in source text.
-      // For vision sources, trust Claude's extraction (headword is in an image, not text).
+      // For scanned sources, trust the model extraction (headword may come from OCR/image context).
       const isVisionSource = !!crawlResult.visual_content?.is_scan;
       const verified = isVisionSource
         ? vocabEntries.filter((e) =>

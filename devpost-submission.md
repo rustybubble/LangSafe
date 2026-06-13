@@ -6,7 +6,7 @@ LangSafe is an AI-powered language preservation platform that turns scattered en
 
 ## Built With
 
-Next.js, React, TypeScript, Tailwind CSS, shadcn/ui, Framer Motion, Featherless.ai, Anthropic Claude, Elasticsearch, Jina AI, Perplexity Sonar, BrightData, Browserbase Stagehand, Socket.io, Leaflet, react-force-graph, Recharts, D3, Zod, Node.js, Python/FastAPI, RunPod, HeyGen, Cloudflare R2/KV, Vercel.
+Next.js, React, TypeScript, Tailwind CSS, shadcn/ui, Framer Motion, Featherless.ai, Elasticsearch, Jina AI, BrightData, Browserbase Stagehand, Socket.io, Leaflet, react-force-graph, Recharts, D3, Zod, Node.js, Python/FastAPI, RunPod, HeyGen, Cloudflare R2/KV, Vercel.
 
 ## Inspiration
 
@@ -32,9 +32,9 @@ LangSafe is a computational linguistics platform for endangered-language preserv
 
 We built LangSafe with a Next.js 16 and React 19 frontend, TypeScript, Tailwind CSS, shadcn/ui components, and Framer Motion for a polished product experience. The interface has a blue, clean visual system with a dashboard, language browser, judge brief, archive views, map views, and the Revitalization Studio.
 
-On the backend side, we use Next.js API routes, Node.js services, Socket.io for live agent updates, and a demo-safe Jejueo dataset so the app works even without every production credential. The broader architecture supports Elasticsearch for structured vocabulary and grammar retrieval, Jina AI embeddings and reranking for semantic search, Perplexity and BrightData for discovery, Browserbase/Stagehand for crawling dynamic sources, and Claude-based extraction/cross-reference agents.
+On the backend side, we use Next.js API routes, Node.js services, Socket.io for live agent updates, and a demo-safe Jejueo dataset so the app works even without every production credential. The broader architecture supports Elasticsearch for structured vocabulary and grammar retrieval, Jina AI embeddings and reranking for semantic search, Featherless-powered source planning, BrightData for optional live SERP/unlocking, Browserbase/Stagehand for crawling dynamic sources, and Featherless-based extraction/cross-reference agents.
 
-For the LingHacks sponsor integration, we added a server-side Featherless.ai route at `/api/featherless/lesson`. The Studio sends selected vocabulary, grammar focus, audience, and lesson options to Featherless using its OpenAI-compatible chat completions API. The response is normalized into a lesson pack with a title, summary, activities, oral-history prompt, and quick check.
+For the LingHacks sponsor integration, Featherless.ai is now the primary model layer. The Ask tab streams grounded archive answers, the Studio generates lesson packs, and the preservation pipeline uses Featherless-compatible agents for discovery planning, extraction, cross-reference, enrichment, and transcript correction.
 
 ## Challenges We Ran Into
 
@@ -114,7 +114,7 @@ Say: "The most important product decision is that humans stay in the loop. In th
 
 On screen: Judge Brief page.
 
-Say: "The Judge Brief summarizes the technical stack and rubric alignment. LangSafe combines a polished Next.js interface, API routes, live agent-style streaming, demo-safe fallbacks, Elasticsearch-compatible archive models, Jina-style semantic retrieval, Perplexity and BrightData discovery paths, Browserbase crawling support, graph visualization, maps, audio pipeline hooks, and Featherless.ai generation. The core idea is simple but powerful: move endangered-language work from scattered fragments to verified learning materials communities can actually use."
+Say: "The Judge Brief summarizes the technical stack and rubric alignment. LangSafe combines a polished Next.js interface, API routes, live agent-style streaming, demo-safe fallbacks, Elasticsearch-compatible archive models, Jina-style semantic retrieval, Featherless-powered source planning and extraction, optional BrightData discovery paths, Browserbase crawling support, graph visualization, maps, audio pipeline hooks, and Featherless.ai lesson generation. The core idea is simple but powerful: move endangered-language work from scattered fragments to verified learning materials communities can actually use."
 
 ## Suggested Screenshots
 

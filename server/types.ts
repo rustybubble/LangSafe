@@ -31,7 +31,7 @@ export interface DiscoveredSource {
   type: SourceType;
   description?: string;
   estimated_entries?: number;
-  discovered_via?: "perplexity" | "serp_api" | "priority";
+  discovered_via?: "featherless" | "serp_api" | "priority";
 }
 
 export interface CrawlResult {

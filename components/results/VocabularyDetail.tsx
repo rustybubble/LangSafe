@@ -487,7 +487,7 @@ function PronunciationVideoSection({ word, language, audioUrl }: { word: string;
 }
 
 // ---------------------------------------------------------------------------
-// Knowledge Provenance — Sonar citation transparency
+// Knowledge provenance — citation transparency
 // ---------------------------------------------------------------------------
 
 function ProvenanceSection({ entry }: { entry: VocabularyEntry }) {
@@ -508,7 +508,7 @@ function ProvenanceSection({ entry }: { entry: VocabularyEntry }) {
               className="ml-1 gap-1 border-0 px-1.5 py-0 text-[10px] font-medium"
               style={{ backgroundColor: "#6D28D910", color: "#6D28D9" }}
             >
-              Perplexity Sonar
+              AI source discovery
             </Badge>
           </span>
         </SectionHeading>
@@ -528,7 +528,7 @@ function ProvenanceSection({ entry }: { entry: VocabularyEntry }) {
           </div>
         )}
 
-        {/* Citation sources — what Sonar cited for this entry */}
+        {/* Citation sources — what was cited for this entry */}
         {citationRefs.length > 0 && (
           <div className="space-y-1.5">
             <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
@@ -673,7 +673,7 @@ export function VocabularyDetail({
               <SourceComparison refs={entry.cross_references} />
             )}
 
-            {/* Knowledge provenance — Sonar citation transparency */}
+            {/* Knowledge provenance — citation transparency */}
             <ProvenanceSection entry={entry} />
 
             {/* Conjugations */}

@@ -10,13 +10,12 @@ import {
   Globe,
   Database,
   ExternalLink,
-  Brain,
-  Sparkles,
   Cpu,
   Shield,
   Video,
   Bot,
   Triangle,
+  Feather,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -50,7 +49,7 @@ const PIPELINE_STEPS = [
   {
     title: "Discovery",
     description:
-      "AI agents search with 6-tier dynamic queries across Perplexity Sonar and SERP APIs, generating up to 24 targeted queries per language.",
+      "Featherless-powered agents plan 6-tier dynamic queries and combine priority archives, verified public resource patterns, and optional SERP APIs, generating up to 24 targeted discovery paths per language.",
   },
   {
     title: "Crawl",
@@ -60,12 +59,12 @@ const PIPELINE_STEPS = [
   {
     title: "Extraction",
     description:
-      "Claude processes each source in a tool-use loop, extracting structured vocabulary entries, grammar patterns, IPA transcriptions, and conjugations.",
+      "Featherless processes each source in a schema-guided tool loop, extracting structured vocabulary entries, grammar patterns, IPA transcriptions, and conjugations.",
   },
   {
     title: "Cross-Reference",
     description:
-      "A second Claude agent searches for duplicate entries across sources, merging definitions and calculating reliability scores.",
+      "A second Featherless agent searches for duplicate entries across sources, merging definitions and calculating reliability scores.",
   },
   {
     title: "Archive",
@@ -108,11 +107,10 @@ const DATA_SOURCES: {
 ];
 
 const PARTNERS: { name: string; icon: LucideIcon }[] = [
-  { name: "Anthropic", icon: Brain },
+  { name: "Featherless.ai", icon: Feather },
   { name: "Elastic + JINA", icon: Search },
   { name: "Browserbase", icon: Globe },
   { name: "BrightData", icon: Database },
-  { name: "Perplexity", icon: Sparkles },
   { name: "Runpod", icon: Cpu },
   { name: "Cloudflare", icon: Shield },
   { name: "HeyGen", icon: Video },

@@ -34,7 +34,7 @@ import type { BrightDataMetrics } from "@/lib/types";
 
 const BD_BLUE = "#0066FF";
 const BD_BLUE_SOFT = "#0066FF26";
-const PERPLEXITY_PURPLE = "#6D28D9";
+const FEATHERLESS_BLUE = "#2563EB";
 
 // ---------------------------------------------------------------------------
 // Attribution tooltip
@@ -132,7 +132,7 @@ export function BrightDataImpact() {
   const totalSources = serpApiDiscoveries + (liveStats.sources - serpApiDiscoveries);
   const chartData = [
     { label: "SERP API", value: serpApiDiscoveries, color: BD_BLUE },
-    { label: "Perplexity", value: Math.max(0, liveStats.sources - serpApiDiscoveries), color: PERPLEXITY_PURPLE },
+    { label: "Featherless", value: Math.max(0, liveStats.sources - serpApiDiscoveries), color: FEATHERLESS_BLUE },
   ].filter((d) => d.value > 0);
 
   return (
@@ -229,11 +229,11 @@ export function BrightDataImpact() {
         <Card className="border-border/50 bg-card/80">
           <CardContent className="p-2.5">
             <div className="flex items-center gap-1.5 mb-1">
-              <Timer className="h-3 w-3" style={{ color: PERPLEXITY_PURPLE }} />
+              <Timer className="h-3 w-3" style={{ color: FEATHERLESS_BLUE }} />
               <span className="text-[10px] text-muted-foreground">Avg Speed</span>
             </div>
             {avgWU > 0 ? (
-              <span className="text-sm font-bold" style={{ color: PERPLEXITY_PURPLE }}>
+              <span className="text-sm font-bold" style={{ color: FEATHERLESS_BLUE }}>
                 {(avgWU / 1000).toFixed(1)}s
               </span>
             ) : (

@@ -24,7 +24,7 @@ This fork adapts LangSafe for LingHacks VII with a judge-ready, no-key demo path
 
 - **Demo-safe archive mode** — Jejueo fallback data powers vocabulary, grammar, graph, sources, run history, and language overview screens even without Elasticsearch or API keys.
 - **Revitalization Studio** — Community reviewers can verify entries, request elder notes, flag sensitive content, and generate lesson packs from preserved vocabulary.
-- **Featherless.ai lesson generation** — The Studio uses Featherless's OpenAI-compatible chat API when `FEATHERLESS_API_KEY` is configured, with a local fallback for live demos.
+- **Featherless.ai model layer** — Ask, Studio, source planning, extraction, cross-reference, enrichment, and transcript correction use Featherless's OpenAI-compatible chat API when `FEATHERLESS_API_KEY` is configured, with local fallbacks for live demos where appropriate.
 - **Judge Brief** — A dedicated rubric page maps the project to creativity, impact, feasibility, technology, and UI/UX.
 - **Human-centered first screen** — A clean blue visual direction and LingHacks framing make the product feel like a preservation tool, not only an agent dashboard.
 
@@ -45,19 +45,19 @@ Suggested demo path:
 ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────────┐    ┌─────────────┐
 │  Discovery   │───▶│    Crawl     │───▶│  Extraction  │───▶│ Cross-Reference │───▶│   Archive   │
 │              │    │             │    │              │    │                 │    │             │
-│ Perplexity   │    │ Cheerio     │    │ Claude AI    │    │ Claude AI       │    │ Elastic     │
-│ BrightData   │    │ Stagehand   │    │ Vision API   │    │ Merge & verify  │    │ Jina embed  │
+│ Featherless  │    │ Cheerio     │    │ Featherless  │    │ Featherless     │    │ Elastic     │
+│ BrightData   │    │ Stagehand   │    │ OCR/PDF text │    │ Merge & verify  │    │ Jina embed  │
 │ SERP API     │    │ BrightData  │    │ PDF parsing  │    │ Deduplication   │    │ Semantic    │
 └─────────────┘    └─────────────┘    └─────────────┘    └─────────────────┘    └─────────────┘
 ```
 
-1. **Discovery** — AI agents search across Perplexity Sonar and BrightData SERP API with 6-tier dynamic queries (core terms, native names, alternate names, contact languages, country-specific, language family), generating up to 24 targeted queries per language
+1. **Discovery** — Featherless-powered agents plan source discovery across priority archives, verified public resource patterns, and optional BrightData SERP API with 6-tier dynamic queries (core terms, native names, alternate names, contact languages, country-specific, language family), generating up to 24 targeted queries per language
 
-2. **Crawl** — Each discovered source is fetched through a 3-tier cascade: specialized crawlers (YouTube, Wikipedia, ELAR, dictionaries) → BrightData Web Unlocker (CAPTCHA bypass) → Cheerio/Stagehand (headless browser). PDFs are parsed with text extraction or Claude Vision for scanned documents
+2. **Crawl** — Each discovered source is fetched through a 3-tier cascade: specialized crawlers (YouTube, Wikipedia, ELAR, dictionaries) → BrightData Web Unlocker (CAPTCHA bypass) → Cheerio/Stagehand (headless browser). PDFs are parsed with text extraction and scanned/OCR fallbacks
 
-3. **Extraction** — Claude processes each source in a manual tool-use loop, extracting structured vocabulary entries (headword, definitions, IPA, conjugations, morphology, examples) and grammar patterns (9 categories) into Elasticsearch
+3. **Extraction** — Featherless processes each source in a schema-guided tool-use loop, extracting structured vocabulary entries (headword, definitions, IPA, conjugations, morphology, examples) and grammar patterns (9 categories) into Elasticsearch
 
-4. **Cross-Reference** — A second Claude agent searches for duplicate entries across sources, merging definitions, examples, and cross-references while calculating reliability scores based on source count
+4. **Cross-Reference** — A second Featherless agent searches for duplicate entries across sources, merging definitions, examples, and cross-references while calculating reliability scores based on source count
 
 5. **Archive** — All data flows into Elasticsearch with Jina v3 embeddings (1024-dim) for semantic search, reranking, and knowledge graph generation
 
@@ -77,7 +77,7 @@ Suggested demo path:
 - **Judge Brief** — Rubric-aligned demo narrative for hackathon presentations
 - **Offline Demo Fallbacks** — Search, grammar, graph, sources, run artifacts, stats, and overview routes degrade to realistic Jejueo demo data
 - **Audio Pipeline** — YouTube audio extraction with Whisper transcription (RunPod serverless), word-level timestamps, and pronunciation avatar generation (HeyGen)
-- **PDF & Scan Extraction** — Text extraction via pdf-parse with automatic Vision API fallback for scanned/degraded documents
+- **PDF & Scan Extraction** — Text extraction via pdf-parse with scanned/OCR extraction paths for degraded documents
 - **Adaptive Web Crawling** — Domain-specific crawlers with BrightData Web Unlocker for geo-blocked and CAPTCHA-protected sources
 
 ---
@@ -89,9 +89,9 @@ Suggested demo path:
 | **Frontend** | Next.js 16, React 19, Tailwind CSS 4, shadcn/ui, Framer Motion, socket.io-client |
 | **Visualization** | react-force-graph-2d, Leaflet + react-leaflet, Recharts, D3.js |
 | **Backend** | Express 5, Socket.io, Node.js (tsx runtime) |
-| **AI Agents** | Anthropic Claude (Haiku 4.5 + Sonnet 4.5), manual tool-use loops |
+| **AI Agents** | Featherless.ai OpenAI-compatible chat completions, schema-guided tool-use loops |
 | **Lesson Generation** | Featherless.ai OpenAI-compatible chat completions, demo fallback generator |
-| **Search & Discovery** | Perplexity Sonar API, BrightData SERP API + Web Unlocker |
+| **Search & Discovery** | Featherless source planning, priority archives, BrightData SERP API + Web Unlocker |
 | **Embeddings** | Jina AI v3 (embeddings) + v2 (reranking) |
 | **Data Store** | Elasticsearch 9 (serverless) — vocabulary, grammar, languages, pipeline runs |
 | **Web Crawling** | Cheerio, Browserbase + Stagehand, pdf-parse, pdfjs-dist |
@@ -147,7 +147,7 @@ Suggested demo path:
 ### Install
 
 ```bash
-git clone https://github.com/lourdrickvalsote/LangSafe.git langsafe-linghacks
+git clone https://github.com/rustybubble/LangSafe.git langsafe-linghacks
 cd langsafe-linghacks
 npm install --legacy-peer-deps
 ```
@@ -160,10 +160,8 @@ Create a `.env.local` file in the project root:
 |---|---|---|
 | `ELASTIC_URL` | Yes | Elasticsearch cluster URL |
 | `ELASTIC_API_KEY` | Yes | Elasticsearch API key |
-| `ANTHROPIC_API_KEY` | Yes | Claude API key (agents) |
-| `FEATHERLESS_API_KEY` | No | Featherless.ai key for lesson generation in Studio |
+| `FEATHERLESS_API_KEY` | Yes for live AI | Featherless.ai key for Ask, Studio, discovery planning, extraction, cross-reference, enrichment, and transcript correction |
 | `FEATHERLESS_MODEL` | No | Featherless model ID, defaults to `Qwen/Qwen2.5-7B-Instruct` |
-| `PERPLEXITY_API_KEY` | Yes | Perplexity Sonar API key (discovery search) |
 | `JINA_API_KEY` | Yes | Jina AI key (embeddings + reranking) |
 | `NEXT_PUBLIC_WS_URL` | No | WebSocket server URL (default: `http://localhost:3001`) |
 | `BROWSERBASE_API_KEY` | No | Browserbase API key (headless browsing) |
@@ -263,8 +261,7 @@ LangSafe/
 
 | Sponsor | Integration |
 |---|---|
-| **Featherless.ai** | OpenAI-compatible server-side lesson generation for the Revitalization Studio |
-| **Anthropic** | Claude Haiku 4.5 + Sonnet 4.5 power the extraction, cross-reference, and enrichment agents |
+| **Featherless.ai** | OpenAI-compatible Ask tab, lesson generation, source planning, extraction, cross-reference, enrichment, and transcript correction |
 | **BrightData** | SERP API for geo-targeted search from inside countries; Web Unlocker for CAPTCHA-protected archives |
 | **Browserbase** | Stagehand headless browser for JavaScript-heavy dictionary sites |
 | **Jina AI** | v3 embeddings (1024-dim) for semantic search; v2 reranker for result quality |

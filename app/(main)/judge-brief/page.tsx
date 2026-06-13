@@ -42,7 +42,7 @@ const RUBRIC = [
     icon: Cpu,
     color: "#0A84FF",
     copy:
-      "Next.js 16, React 19, Socket.io, Elasticsearch hybrid retrieval, Jina embeddings, Featherless.ai lesson generation, Claude agents, and map/graph visualizations.",
+      "Next.js 16, React 19, Socket.io, Elasticsearch hybrid retrieval, Jina embeddings, Featherless.ai agents, and map/graph visualizations.",
   },
   {
     title: "UI/UX",
@@ -68,8 +68,8 @@ const STACK = [
   "Elasticsearch",
   "Jina AI",
   "Featherless.ai",
-  "Claude tool-use agents",
-  "Perplexity Sonar",
+  "Featherless tool-use agents",
+  "AI source discovery",
   "BrightData",
   "Browserbase Stagehand",
   "Leaflet",

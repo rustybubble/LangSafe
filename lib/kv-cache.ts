@@ -15,7 +15,7 @@ export const TTL = {
   STATS: 300,       // 5 min  — preservation / global stats
   GEO: 600,         // 10 min — geo viewport results
   OVERVIEW: 86400,  // 24 hours — AI-generated language overviews
-  PERPLEXITY: 86400, // 24 hours — Perplexity Sonar discovery responses
+  DISCOVERY: 86400,  // 24 hours — AI source discovery responses
 } as const;
 
 // ─── Cache Key Builders ─────────────────────────────────────────────────────
@@ -39,8 +39,8 @@ export const cacheKeys = {
   geo: (north: number, south: number, east: number, west: number) =>
     `geo:${north.toFixed(1)}:${south.toFixed(1)}:${east.toFixed(1)}:${west.toFixed(1)}`,
 
-  /** Perplexity Sonar response by query hash */
-  perplexity: (queryHash: string) => `perplexity:${queryHash}`,
+  /** AI source discovery response by query hash */
+  discovery: (queryHash: string) => `discovery:${queryHash}`,
 
   /** Grammar pattern stats — per-language or global */
   grammarStats: (langCode?: string) =>

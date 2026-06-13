@@ -11,7 +11,7 @@ export interface PipelineSource {
   title: string;
   type: string;
   description?: string;
-  discovered_via?: "perplexity" | "serp_api" | "priority";
+  discovered_via?: "featherless" | "serp_api" | "priority";
 }
 
 export interface BrightDataPipelineStats {
@@ -56,7 +56,7 @@ export interface PipelineCallbacks {
     meta: LanguageMetadata,
     onSource: (source: PipelineSource) => void,
     signal?: AbortSignal
-  ) => Promise<{ serp_api_searches?: number; perplexity_searches?: number; web_unlocker_scrapes?: number } | void>;
+  ) => Promise<{ serp_api_searches?: number; featherless_searches?: number; web_unlocker_scrapes?: number } | void>;
 
   onCrawlSource: (
     url: string,

@@ -9,7 +9,7 @@ import type { DiscoveredSource, LanguageMetadata } from "../types.js";
 
 export interface DiscoveryStats {
   serp_api_searches: number;
-  perplexity_searches: number;
+  featherless_searches: number;
   web_unlocker_scrapes: number;
 }
 
@@ -62,7 +62,7 @@ export async function runDiscoveryAgent(
       })),
       stats: {
         serp_api_searches: result.serp_api_searches,
-        perplexity_searches: result.perplexity_searches,
+        featherless_searches: result.featherless_searches,
         web_unlocker_scrapes: result.web_unlocker_scrapes,
       },
     };
@@ -72,7 +72,7 @@ export async function runDiscoveryAgent(
     }, scanEvent.id);
     return {
       sources: [],
-      stats: { serp_api_searches: 0, perplexity_searches: 0, web_unlocker_scrapes: 0 },
+      stats: { serp_api_searches: 0, featherless_searches: 0, web_unlocker_scrapes: 0 },
     };
   }
 }

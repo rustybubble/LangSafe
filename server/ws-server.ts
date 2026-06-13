@@ -7,8 +7,7 @@ dotenv.config(); // also load .env for deployed environments
 const REQUIRED_ENV = [
   "ELASTIC_URL",
   "ELASTIC_API_KEY",
-  "ANTHROPIC_API_KEY",
-  "PERPLEXITY_API_KEY",
+  "FEATHERLESS_API_KEY",
   "JINA_API_KEY",
 ] as const;
 

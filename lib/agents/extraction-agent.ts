@@ -1,5 +1,5 @@
 import { getErrorMessage } from "../utils/errors";
-import Anthropic from "@anthropic-ai/sdk";
+import { FeatherlessClient, Featherless } from "../apis/featherless.js";
 import type { GrammarPattern, GrammarCategory, GrammarExample } from "../types";
 import type { VisualContent, ScanQuality } from "../crawlers/dispatch";
 import { createHash } from "crypto";
@@ -47,8 +47,8 @@ export interface ExtractionAgentResult {
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const MODEL_HAIKU = "claude-haiku-4-5-20251001";
-const MODEL_SONNET = "claude-sonnet-4-5-20250929";
+const MODEL_PRIMARY = process.env.FEATHERLESS_MODEL || "Qwen/Qwen2.5-7B-Instruct";
+const MODEL_SCAN = process.env.FEATHERLESS_VISION_MODEL || MODEL_PRIMARY;
 const MAX_TOKENS = 12288;
 const CHUNK_SIZE = 50_000;
 const MAX_CONTENT_LENGTH = 200_000;
@@ -67,9 +67,9 @@ function maxTurnsForSource(sourceType: string): number {
 }
 
 function selectModel(_sourceType: string, hasVision: boolean = false, scanQuality?: ScanQuality): string {
-  if (!hasVision) return MODEL_HAIKU; // Haiku 4.5 handles all text extraction well
-  if (scanQuality === "clean") return MODEL_HAIKU; // Clean scans with printed text → Haiku can handle
-  return MODEL_SONNET; // degraded, unknown, or undefined → Sonnet for accuracy
+  if (!hasVision) return MODEL_PRIMARY;
+  if (scanQuality === "clean") return MODEL_PRIMARY;
+  return MODEL_SCAN;
 }
 
 const GRAMMAR_CATEGORIES = [
@@ -296,7 +296,7 @@ const GRAMMAR_PATTERN_SCHEMA = {
   required: ["title", "category", "description"],
 };
 
-const TOOLS: Anthropic.Tool[] = [
+const TOOLS: Featherless.Tool[] = [
   {
     name: "save_entries",
     cache_control: { type: "ephemeral" as const },
@@ -557,7 +557,7 @@ function buildUserContent(
   sourceType: string,
   chunkLabel: string,
   visualContent?: VisualContent
-): string | Anthropic.ContentBlockParam[] {
+): string | Featherless.ContentBlockParam[] {
   if (!visualContent) {
     return `Extract all vocabulary entries and grammar patterns from the following content.
 
@@ -568,7 +568,7 @@ CONTENT:
 ${chunk}`;
   }
 
-  const blocks: Anthropic.ContentBlockParam[] = [];
+  const blocks: Featherless.ContentBlockParam[] = [];
 
   blocks.push({
     type: "text",
@@ -591,7 +591,7 @@ ${chunk && chunk.length > 10 ? `EXTRACTED TEXT (may be partial or garbled from O
         data: visualContent.pdf_base64,
       },
       title: sourceTitle,
-    } as Anthropic.DocumentBlockParam);
+    } as Featherless.DocumentBlockParam);
   }
 
   if (visualContent.images?.length) {
@@ -607,7 +607,7 @@ ${chunk && chunk.length > 10 ? `EXTRACTED TEXT (may be partial or garbled from O
           media_type: img.media_type,
           data: img.data,
         },
-      } as Anthropic.ImageBlockParam);
+      } as Featherless.ImageBlockParam);
     }
   }
 
@@ -630,7 +630,7 @@ export async function runExtractionAgent(
   visualContent?: VisualContent,
   signal?: AbortSignal
 ): Promise<ExtractionAgentResult> {
-  const client = new Anthropic({ maxRetries: 3 });
+  const client = new FeatherlessClient({ maxRetries: 3 });
   const allEntries: ExtractionEntry[] = [];
   const allGrammarPatterns: GrammarPattern[] = [];
   let totalSaved = 0;
@@ -641,7 +641,7 @@ export async function runExtractionAgent(
   let totalCacheReadTokens = 0;
   let totalCacheCreationTokens = 0;
 
-  const trackUsage = (response: Anthropic.Message): void => {
+  const trackUsage = (response: Featherless.Message): void => {
     totalInputTokens += response.usage.input_tokens;
     totalOutputTokens += response.usage.output_tokens;
     totalCacheReadTokens += (response.usage as unknown as Record<string, number>).cache_read_input_tokens || 0;
@@ -676,14 +676,14 @@ export async function runExtractionAgent(
   // Strip boilerplate before chunking to reduce token count
   const cleanedContent = preprocessContent(trimmedContent);
 
-  // Vision fast-path: send visual content in a single pass (no text chunking)
+  // Scanned-content fast path: run a single pass over extracted text/OCR context.
   if (hasVision) {
     const visionModel = selectModel(sourceType, true, visualContent?.scan_quality);
-    console.log(`[ExtractionAgent] Vision: quality=${visualContent?.scan_quality ?? "unknown"}, model=${visionModel === MODEL_HAIKU ? "Haiku" : "Sonnet"}, source=${sourceUrl}`);
-    onProgress(`Processing scanned content from ${sourceTitle} with ${visionModel === MODEL_HAIKU ? "Haiku" : "Sonnet"}...`, 0);
+    console.log(`[ExtractionAgent] Scanned content: quality=${visualContent?.scan_quality ?? "unknown"}, model=${visionModel}, source=${sourceUrl}`);
+    onProgress(`Processing scanned content from ${sourceTitle} with Featherless...`, 0);
 
     const userContent = buildUserContent(cleanedContent, sourceTitle, sourceUrl, sourceType, "", visualContent);
-    const messages: Anthropic.MessageParam[] = [
+    const messages: Featherless.MessageParam[] = [
       { role: "user", content: userContent },
     ];
 
@@ -694,7 +694,7 @@ export async function runExtractionAgent(
     for (let turn = 0; turn < maxTurnsForSource(sourceType); turn++) {
       if (signal?.aborted) break;
 
-      let response: Anthropic.Message;
+      let response: Featherless.Message;
       try {
         response = await client.messages.create({
           model: visionModel,
@@ -705,7 +705,7 @@ export async function runExtractionAgent(
           messages,
         });
       } catch (err) {
-        console.error(`[ExtractionAgent] Vision API error on turn ${turn}: ${getErrorMessage(err)}`);
+        console.error(`[ExtractionAgent] Featherless scanned-content error on turn ${turn}: ${getErrorMessage(err)}`);
         break;
       }
 
@@ -714,7 +714,7 @@ export async function runExtractionAgent(
       const hasToolUse = response.content.some((b) => b.type === "tool_use");
       if (!hasToolUse || response.stop_reason === "end_turn") break;
 
-      const toolResults: Anthropic.ToolResultBlockParam[] = [];
+      const toolResults: Featherless.ToolResultBlockParam[] = [];
 
       for (const block of response.content) {
         if (block.type !== "tool_use") continue;
@@ -734,10 +734,10 @@ export async function runExtractionAgent(
               const result = await onSaveEntries(batch);
               chunkSaved += result.saved;
             } catch (err) {
-              console.error(`[ExtractionAgent] Vision save failed: ${getErrorMessage(err)}`);
+              console.error(`[ExtractionAgent] Scanned-content save failed: ${getErrorMessage(err)}`);
             }
           }
-          onProgress(`Vision extraction: ${chunkEntries.length} entries found so far...`, chunkEntries.length);
+          onProgress(`Scanned-content extraction: ${chunkEntries.length} entries found so far...`, chunkEntries.length);
           toolResults.push({ type: "tool_result", tool_use_id: block.id, content: "OK" });
         } else if (block.name === "save_grammar_patterns") {
           const input = block.input as { patterns?: unknown[] };
@@ -779,7 +779,7 @@ export async function runExtractionAgent(
       ? `\n\n[This is section ${chunkIdx + 1} of ${totalChunks}]`
       : "";
 
-    const messages: Anthropic.MessageParam[] = [
+    const messages: Featherless.MessageParam[] = [
       {
         role: "user",
         content: buildUserContent(chunk, sourceTitle, sourceUrl, sourceType, chunkLabel),
@@ -789,7 +789,7 @@ export async function runExtractionAgent(
     for (let turn = 0; turn < maxTurnsForSource(sourceType); turn++) {
       if (signal?.aborted) break;
 
-      let response: Anthropic.Message;
+      let response: Featherless.Message;
       try {
         response = await client.messages.create({
           model: selectModel(sourceType),
@@ -801,7 +801,7 @@ export async function runExtractionAgent(
         });
       } catch (err) {
         console.error(
-          `[ExtractionAgent] Claude API error on chunk ${chunkIdx + 1}, turn ${turn}: ${getErrorMessage(err)}`
+          `[ExtractionAgent] Featherless API error on chunk ${chunkIdx + 1}, turn ${turn}: ${getErrorMessage(err)}`
         );
         break;
       }
@@ -813,7 +813,7 @@ export async function runExtractionAgent(
         break;
       }
 
-      const toolResults: Anthropic.ToolResultBlockParam[] = [];
+      const toolResults: Featherless.ToolResultBlockParam[] = [];
 
       for (const block of response.content) {
         if (block.type !== "tool_use") continue;
