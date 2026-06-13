@@ -134,6 +134,8 @@ export function AgentChat({ languageCode, languageName }: AgentChatProps) {
         body: JSON.stringify({
           message: text,
           conversation_id: conversationId,
+          language_code: languageCode,
+          language_name: languageName,
         }),
       });
 
@@ -249,7 +251,7 @@ export function AgentChat({ languageCode, languageName }: AgentChatProps) {
       setToolStatus(null);
       inputRef.current?.focus();
     }
-  }, [input, isLoading, conversationId]);
+  }, [input, isLoading, conversationId, languageCode, languageName]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -398,7 +400,7 @@ export function AgentChat({ languageCode, languageName }: AgentChatProps) {
           </button>
         </div>
         <p className="mt-1.5 text-[10px] text-muted-foreground text-center">
-          Powered by Elastic Agent Builder
+          Powered by Featherless.ai
         </p>
       </div>
     </div>

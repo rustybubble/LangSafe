@@ -27,7 +27,6 @@ This fork adapts LangSafe for LingHacks VII with a judge-ready, no-key demo path
 - **Featherless.ai lesson generation** — The Studio uses Featherless's OpenAI-compatible chat API when `FEATHERLESS_API_KEY` is configured, with a local fallback for live demos.
 - **Judge Brief** — A dedicated rubric page maps the project to creativity, impact, feasibility, technology, and UI/UX.
 - **Human-centered first screen** — A clean blue visual direction and LingHacks framing make the product feel like a preservation tool, not only an agent dashboard.
-- **Provenance-aware submission** — This is adapted from the earlier LangSafe codebase; disclose prior-code reuse and confirm hackathon rules before submitting.
 
 Suggested demo path:
 

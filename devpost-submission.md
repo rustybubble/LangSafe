@@ -72,43 +72,49 @@ Next, LangSafe could expand in several directions:
 - Build evaluation tools that compare model-generated lesson packs against verified community guidelines.
 - Deploy the full pipeline so communities can preserve and teach from their own language resources.
 
-## 2-3 Minute Demo Video Script
+## 3 Minute Technical Demo Video Script
 
-### 0:00-0:15 - Hook
+### 0:00-0:20 - Hook
 
 On screen: LangSafe landing page.
 
-Say: "Every endangered language is more than a vocabulary list. It carries memory, ecological knowledge, family history, and identity. The problem is that resources for these languages are often scattered across PDFs, videos, dictionaries, and archives. LangSafe helps turn those fragments into a living, community-reviewed learning archive."
+Say: "Every endangered language is more than a vocabulary list. It carries memory, ecological knowledge, family history, place names, and identity. The problem is that the resources are scattered across PDFs, dictionary websites, videos, audio collections, and academic archives. LangSafe turns those fragments into a living, community-reviewed learning archive."
 
-### 0:15-0:35 - What LangSafe Is
+### 0:20-0:45 - System Overview
 
-On screen: Open the Dashboard or Jejueo language page.
+On screen: Open Dashboard, then the Jejueo language page.
 
-Say: "LangSafe is an AI-powered platform for endangered-language preservation and revitalization. For this LingHacks demo, we focused on Jejueo, the critically endangered language of Jeju Island. The app shows speaker estimates, archive coverage, vocabulary entries, grammar patterns, sources, and preservation status."
+Say: "LangSafe is a full-stack AI preservation platform. The frontend is built with Next.js, React, TypeScript, Tailwind, shadcn UI, and Framer Motion. The backend uses Next API routes, Socket.io event streaming, Elasticsearch-ready data models, Jina-style semantic search, map and graph visualizations, and model-powered workflows. For LingHacks, the main demo language is Jejueo, a critically endangered language of Jeju Island."
 
-### 0:35-1:05 - Language Archive and Impact
+### 0:45-1:10 - Language Archive and Metrics
 
-On screen: Jejueo language detail page, then scroll or show archive metrics.
+On screen: Jejueo language detail page. Show metrics, map, and About section.
 
-Say: "The goal is not just to save isolated words. LangSafe structures the data with source provenance, definitions, romanization, grammar notes, and language-health metrics. A teacher or linguist can see what has been preserved, what sources were used, and what still needs review."
+Say: "The language page gives judges the impact layer immediately: estimated speakers, endangerment status, entry count, source count, audio count, grammar patterns, and coverage percentage. This is not just a static profile. It is designed as a preservation workspace where a team can see what has been captured, what is missing, and which language resources need more attention."
 
-### 1:05-1:35 - Community Review
+### 1:10-1:35 - Archive Search, Grammar, Sources, and Graph
 
-On screen: Revitalization Studio left panel.
+On screen: Open the archive/search area for Jejueo. Show search, grammar, sources, and graph if available.
 
-Say: "A key design decision was keeping humans in the loop. In the Revitalization Studio, community members can review archive entries as a speaker, teacher, or linguist. They can verify a term, request an elder note, or flag something that may be sensitive or inaccurate. This makes LangSafe a support tool for communities instead of a system that blindly overwrites them."
+Say: "The archive supports multiple ways to inspect preserved language data. You can search vocabulary by English meaning, native script, romanization, or semantic cluster. Grammar patterns are stored separately, with examples and related vocabulary. Sources are tracked by type, such as dictionaries, archives, videos, and academic papers. The graph view connects related words, semantic clusters, and source relationships so a linguist can understand the structure of the archive, not just a flat word list."
 
-### 1:35-2:05 - Featherless.ai Integration
+### 1:35-2:00 - Ask Tab Powered by Featherless.ai
+
+On screen: Open Ask tab and ask, "What Jejueo words have been preserved so far?"
+
+Say: "The Ask tab is now powered by Featherless.ai. The route sends the question plus grounded LangSafe archive context to an open-weight model through Featherless's OpenAI-compatible API. The answer streams back into the UI using server-sent events, so it feels like an agent chat while staying grounded in the current language archive. If production credentials are missing, the route still answers from the bundled demo archive instead of failing."
+
+### 2:00-2:35 - Community Review and Lesson Generation
 
 On screen: Revitalization Studio lesson builder. Click Generate lesson pack and show Featherless.ai badge/model.
 
-Say: "For the LingHacks sponsor integration, we connected Featherless.ai through a server-side OpenAI-compatible route. The lesson builder sends selected Jejueo vocabulary, a grammar focus, and the target audience to Featherless. It returns a lesson pack with activities, an oral-history prompt, and a quick check. The API key stays on the server, and we also built a fallback so the demo remains reliable."
+Say: "The most important product decision is that humans stay in the loop. In the Revitalization Studio, a speaker, teacher, or linguist can verify entries, request an elder note, or flag sensitive content. Then the right side turns reviewed archive data into learning material. The lesson builder sends selected vocabulary, the grammar focus, audience, quiz setting, and oral-history prompt setting to Featherless.ai. It returns a classroom, family, or fieldwork-ready lesson pack with activities, a quick check, and a community interview prompt. The API key stays server-side."
 
-### 2:05-2:30 - Judge Brief and Close
+### 2:35-3:05 - Technical Depth and Close
 
 On screen: Judge Brief page.
 
-Say: "LangSafe aligns with the LingHacks rubric by combining creativity, social impact, technical depth, feasibility, and a clean UI. It uses modern web tooling, retrieval, AI agents, semantic search, maps, graphs, and open-weight model inference, but the core idea is simple: help endangered-language communities move from scattered fragments to verified learning materials. That's LangSafe."
+Say: "The Judge Brief summarizes the technical stack and rubric alignment. LangSafe combines a polished Next.js interface, API routes, live agent-style streaming, demo-safe fallbacks, Elasticsearch-compatible archive models, Jina-style semantic retrieval, Perplexity and BrightData discovery paths, Browserbase crawling support, graph visualization, maps, audio pipeline hooks, and Featherless.ai generation. The core idea is simple but powerful: move endangered-language work from scattered fragments to verified learning materials communities can actually use."
 
 ## Suggested Screenshots
 
@@ -116,7 +122,3 @@ Say: "LangSafe aligns with the LingHacks rubric by combining creativity, social 
 - `devpost-screenshots/02-jejueo-language-detail.png`
 - `devpost-screenshots/03-featherless-studio.png`
 - `devpost-screenshots/04-judge-brief.png`
-
-## Submission Caution
-
-LingHacks VII's Devpost rules mention that projects must be created during the event period. Since this project was adapted from an earlier codebase, confirm how the organizers want prior work disclosed before submission.

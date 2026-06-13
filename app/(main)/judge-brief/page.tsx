@@ -206,17 +206,6 @@ export default function JudgeBriefPage() {
             </div>
           </section>
 
-          <section className="mt-7 rounded-lg border border-primary/20 bg-primary/5 p-4">
-            <div className="flex items-start gap-3">
-              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-              <p className="text-sm leading-6 text-foreground/80">
-                Provenance note: this LingHacks edition is adapted from the
-                earlier preservation codebase and adds hackathon-specific
-                demo reliability, visual framing, judge brief, community review,
-                and Featherless.ai lesson-generation workflow.
-              </p>
-            </div>
-          </section>
         </div>
       </div>
     </div>
