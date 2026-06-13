@@ -125,8 +125,8 @@ export function AgentFeed() {
             variant="outline"
             className="shrink-0 gap-1 border-0 px-1.5 py-0 text-[10px]"
             style={{
-              backgroundColor: isConnected ? "#04785710" : "#A3470A10",
-              color: isConnected ? "#047857" : "#A3470A",
+              backgroundColor: isConnected ? "#04785710" : "#0A84FF10",
+              color: isConnected ? "#047857" : "#0A84FF",
             }}
           >
             {isConnected ? (

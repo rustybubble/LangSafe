@@ -15,7 +15,7 @@ interface BackupEnvelope {
 }
 
 async function backup() {
-  console.log(`\n📦 TongueKeeper — Elastic Backup\n`);
+  console.log(`\n📦 LangSafe — Elastic Backup\n`);
 
   console.log(`📡 Fetching all entries from Elasticsearch...`);
   const entries = await scrollAll();
@@ -34,7 +34,7 @@ async function backup() {
 
   const json = JSON.stringify(envelope, null, 2);
   const dateSlug = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
-  const filename = `tonguekeeper-backup-${dateSlug}.json`;
+  const filename = `LangSafe-backup-${dateSlug}.json`;
 
   if (!existsSync(BACKUP_DIR)) {
     mkdirSync(BACKUP_DIR, { recursive: true });
@@ -56,7 +56,7 @@ async function backup() {
 }
 
 async function restore(filepath: string) {
-  console.log(`\n♻️  TongueKeeper — Elastic Restore\n`);
+  console.log(`\n♻️  LangSafe — Elastic Restore\n`);
 
   if (!existsSync(filepath)) {
     console.error(`❌ File not found: ${filepath}`);

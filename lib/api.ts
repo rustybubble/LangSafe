@@ -1,4 +1,5 @@
 import { VocabularyEntry, LanguageStats, AudioResult, PronunciationVideo, GrammarPattern, GrammarCategory, LanguageBrowserResponse, LanguageFilters, LanguageMetadata, LanguageEntry, LanguageOverview, SourceInfo, SignificantTermsResult, BrightDataMetrics, TranscriptData, PipelineRunArtifact } from "./types";
+import { DEMO_LANGUAGES_RESPONSE } from "./demo-data";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
@@ -292,7 +293,7 @@ export async function fetchLanguages(
     );
   } catch (err) {
     console.warn("[API] Languages fetch failed, using mock data:", err);
-    return MOCK_LANGUAGES_RESPONSE;
+    return DEMO_LANGUAGES_RESPONSE;
   }
 }
 
@@ -312,30 +313,6 @@ export async function fetchLanguageOverview(
     return null;
   }
 }
-
-const MOCK_LANGUAGES_RESPONSE: LanguageBrowserResponse = {
-  languages: [
-    { glottocode: "jeju1234", name: "Jejueo", iso_code: "jje", macroarea: "Eurasia", latitude: 33.38, longitude: 126.56, language_family: "Koreanic", endangerment_status: "critically_endangered", endangerment_level: 5, speaker_count: 5000, countries: ["KR"], preservation_status: { sources_discovered: 15, vocabulary_entries: 3247, audio_clips: 892, last_pipeline_run: "2026-02-15T10:30:00Z", coverage_percentage: 15.2 } },
-    { glottocode: "ainu1240", name: "Ainu", iso_code: "ain", macroarea: "Eurasia", latitude: 42.98, longitude: 141.35, language_family: "Ainu", endangerment_status: "critically_endangered", endangerment_level: 5, speaker_count: 10, countries: ["JP"], preservation_status: { sources_discovered: 0, vocabulary_entries: 0, audio_clips: 0, last_pipeline_run: null, coverage_percentage: 0 } },
-    { glottocode: "yaga1256", name: "Yagán", iso_code: "yag", macroarea: "South America", latitude: -54.93, longitude: -68.58, language_family: "Yaghan", endangerment_status: "critically_endangered", endangerment_level: 5, speaker_count: 1, countries: ["CL"], preservation_status: { sources_discovered: 0, vocabulary_entries: 0, audio_clips: 0, last_pipeline_run: null, coverage_percentage: 0 } },
-    { glottocode: "live1238", name: "Livonian", iso_code: "liv", macroarea: "Eurasia", latitude: 57.57, longitude: 22.07, language_family: "Uralic", endangerment_status: "critically_endangered", endangerment_level: 5, speaker_count: 20, countries: ["LV"], preservation_status: { sources_discovered: 0, vocabulary_entries: 0, audio_clips: 0, last_pipeline_run: null, coverage_percentage: 0 } },
-    { glottocode: "hawa1245", name: "Hawaiian", iso_code: "haw", macroarea: "Papunesia", latitude: 20.0, longitude: -156.32, language_family: "Austronesian", endangerment_status: "severely_endangered", endangerment_level: 4, speaker_count: 2000, countries: ["US"], preservation_status: { sources_discovered: 3, vocabulary_entries: 120, audio_clips: 45, last_pipeline_run: null, coverage_percentage: 0.6 } },
-    { glottocode: "cher1273", name: "Cherokee", iso_code: "chr", macroarea: "North America", latitude: 35.47, longitude: -83.32, language_family: "Iroquoian", endangerment_status: "severely_endangered", endangerment_level: 4, speaker_count: 2100, countries: ["US"], preservation_status: { sources_discovered: 0, vocabulary_entries: 0, audio_clips: 0, last_pipeline_run: null, coverage_percentage: 0 } },
-    { glottocode: "basq1248", name: "Basque", iso_code: "eus", macroarea: "Eurasia", latitude: 43.0, longitude: -2.0, language_family: "Basque", endangerment_status: "vulnerable", endangerment_level: 2, speaker_count: 750000, countries: ["ES", "FR"], preservation_status: { sources_discovered: 0, vocabulary_entries: 0, audio_clips: 0, last_pipeline_run: null, coverage_percentage: 0 } },
-    { glottocode: "maor1246", name: "Māori", iso_code: "mri", macroarea: "Papunesia", latitude: -38.14, longitude: 176.24, language_family: "Austronesian", endangerment_status: "definitely_endangered", endangerment_level: 3, speaker_count: 50000, countries: ["NZ"], preservation_status: { sources_discovered: 0, vocabulary_entries: 0, audio_clips: 0, last_pipeline_run: null, coverage_percentage: 0 } },
-    { glottocode: "okin1246", name: "Okinawan", iso_code: "ryu", macroarea: "Eurasia", latitude: 26.33, longitude: 127.77, language_family: "Japonic", endangerment_status: "definitely_endangered", endangerment_level: 3, speaker_count: 980000, countries: ["JP"], preservation_status: { sources_discovered: 0, vocabulary_entries: 0, audio_clips: 0, last_pipeline_run: null, coverage_percentage: 0 } },
-    { glottocode: "arom1237", name: "Aromanian", iso_code: "rup", macroarea: "Eurasia", latitude: 40.65, longitude: 21.6, language_family: "Indo-European", endangerment_status: "definitely_endangered", endangerment_level: 3, speaker_count: 250000, countries: ["RO", "GR", "AL", "MK"], preservation_status: { sources_discovered: 0, vocabulary_entries: 0, audio_clips: 0, last_pipeline_run: null, coverage_percentage: 0 } },
-    { glottocode: "dala1243", name: "Dalmatian", iso_code: "dlm", macroarea: "Eurasia", latitude: 42.64, longitude: 18.11, language_family: "Indo-European", endangerment_status: "extinct", endangerment_level: 6, speaker_count: 0, countries: ["HR"], preservation_status: { sources_discovered: 0, vocabulary_entries: 0, audio_clips: 0, last_pipeline_run: null, coverage_percentage: 0 } },
-    { glottocode: "quec1387", name: "Quechua", iso_code: "que", macroarea: "South America", latitude: -13.52, longitude: -71.97, language_family: "Quechuan", endangerment_status: "vulnerable", endangerment_level: 2, speaker_count: 7000000, countries: ["PE", "BO", "EC"], preservation_status: { sources_discovered: 0, vocabulary_entries: 0, audio_clips: 0, last_pipeline_run: null, coverage_percentage: 0 } },
-  ],
-  total: 3142,
-  stats: {
-    total_endangered: 3142,
-    critically_endangered: 577,
-    extinct: 348,
-    with_preservation_data: 2,
-  },
-};
 
 // ── Graph ───────────────────────────────────────────────────────────────────
 

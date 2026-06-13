@@ -254,7 +254,7 @@ export function CommandPalette() {
                   value={`grammar-${pattern.title}-${pattern.id}`}
                   onSelect={() => setOpen(false)}
                 >
-                  <Lightbulb className="mr-2 h-4 w-4 shrink-0 text-amber-600" />
+                  <Lightbulb className="mr-2 h-4 w-4 shrink-0 text-sky-600" />
                   <div className="flex flex-col min-w-0">
                     <span className="truncate font-medium">
                       {pattern.title}

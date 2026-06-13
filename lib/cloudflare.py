@@ -1,5 +1,5 @@
 """
-TongueKeeper — Cloudflare helper functions.
+LangSafe — Cloudflare helper functions.
 Python client for the Cloudflare Worker API (R2 upload, KV cache).
 """
 

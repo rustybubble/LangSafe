@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateGraphData, generateNeighborhoodGraph } from "@/lib/graph";
 import { getErrorMessage } from "@/lib/utils/errors";
+import { getDemoGraphData } from "@/lib/demo-data";
 
 export async function GET(request: NextRequest) {
   const cluster = request.nextUrl.searchParams.get("cluster") || undefined;
@@ -16,7 +17,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(data);
   } catch (err) {
-    console.warn("[/api/graph] Elastic unavailable:", getErrorMessage(err));
-    return NextResponse.json({ nodes: [], edges: [] });
+    console.warn("[/api/graph] Elastic unavailable, using demo data:", getErrorMessage(err));
+    return NextResponse.json(getDemoGraphData(cluster, headword));
   }
 }

@@ -1,5 +1,5 @@
 """
-TongueKeeper — RunPod Serverless Whisper Handler
+LangSafe — RunPod Serverless Whisper Handler
 Transcribes endangered language audio (Jeju/Korean) using faster-whisper large-v3.
 """
 
@@ -9,7 +9,7 @@ import uuid
 import subprocess
 import json
 
-print("--- TongueKeeper Whisper Handler Starting ---", flush=True)
+print("--- LangSafe Whisper Handler Starting ---", flush=True)
 print(f"Python: {sys.version}", flush=True)
 print(f"CWD: {os.getcwd()}", flush=True)
 
@@ -56,7 +56,7 @@ def download_audio(url: str) -> str:
     ext = os.path.splitext(url.split("?")[0])[-1] or ".audio"
     tmp_path = os.path.join(TMP_DIR, f"{uuid.uuid4().hex}{ext}")
 
-    headers = {"User-Agent": "TongueKeeper/1.0 (endangered-language-preservation)"}
+    headers = {"User-Agent": "LangSafe/1.0 (endangered-language-preservation)"}
     response = requests.get(url, stream=True, timeout=DOWNLOAD_TIMEOUT, headers=headers)
     response.raise_for_status()
 

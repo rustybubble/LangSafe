@@ -493,7 +493,7 @@ export function ArchiveBuilding({ language, stats }: ArchiveBuildingProps) {
           transition={{ delay: 0.5, duration: 0.4 }}
           className="flex items-center gap-2.5 rounded-lg border border-border/30 bg-muted/10 px-4 py-2.5"
         >
-          <Lightbulb className="h-3.5 w-3.5 shrink-0 text-amber-500/60" />
+          <Lightbulb className="h-3.5 w-3.5 shrink-0 text-sky-500/60" />
           <div className="min-h-[1.25rem] flex items-center flex-1 min-w-0">
             <AnimatePresence mode="wait">
               <motion.p

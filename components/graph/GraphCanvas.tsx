@@ -134,7 +134,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
 
         // Glow — subtle on light background
         if (isSelected || isHovered || isPathNode || isSearchMatch) {
-          ctx.shadowColor = isPathNode ? "#B45309" : color;
+          ctx.shadowColor = isPathNode ? "#2563EB" : color;
           ctx.shadowBlur = isSelected ? 12 : isHovered ? 8 : 6;
         } else {
           ctx.shadowColor = color + "80";
@@ -161,14 +161,14 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
 
         // Selection / path ring
         if (isSelected || isPathNode) {
-          ctx.strokeStyle = isPathNode ? "#B45309" : "#1C1917";
+          ctx.strokeStyle = isPathNode ? "#2563EB" : "#1C1917";
           ctx.lineWidth = 2 / globalScale;
           ctx.stroke();
         }
 
         // Search match ring
         if (isSearchMatch && !isSelected) {
-          ctx.strokeStyle = "#B45309";
+          ctx.strokeStyle = "#2563EB";
           ctx.lineWidth = 1.5 / globalScale;
           ctx.setLineDash([3 / globalScale, 2 / globalScale]);
           ctx.stroke();
@@ -179,7 +179,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
         if (pinnedNodes.has(node.id)) {
           ctx.beginPath();
           ctx.arc(node.x, node.y - r - 3 / globalScale, 2 / globalScale, 0, 2 * Math.PI);
-          ctx.fillStyle = "#B45309";
+          ctx.fillStyle = "#2563EB";
           ctx.shadowBlur = 0;
           ctx.fill();
         }
@@ -264,7 +264,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
     const onRenderFramePre = useCallback(
       (ctx: CanvasRenderingContext2D) => {
         const { width, height } = ctx.canvas;
-        ctx.fillStyle = "#FAF7F2";
+        ctx.fillStyle = "#F5F7FB";
         ctx.fillRect(0, 0, width, height);
       },
       []

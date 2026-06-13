@@ -27,7 +27,7 @@ interface RawCollection {
 }
 
 async function main(): Promise<void> {
-  console.log("\n🌍 TongueKeeper — Generate Countries GeoJSON\n");
+  console.log("\n🌍 LangSafe — Generate Countries GeoJSON\n");
 
   console.log("📥 Downloading Natural Earth countries GeoJSON...");
   console.log(`   Source: ${SOURCE_URL}`);

@@ -11,14 +11,14 @@ const SOURCE_COLORS: Record<string, string> = {
   dictionary: "#1E40AF",
   academic: "#6D28D9",
   video: "#DC2626",
-  archive: "#B45309",
+  archive: "#2563EB",
   wiki: "#047857",
 };
 
 const POS_COLORS: Record<string, string> = {
   noun: "#1E40AF",
   verb: "#047857",
-  adjective: "#B45309",
+  adjective: "#2563EB",
   adverb: "#6D28D9",
   particle: "#DC2626",
 };

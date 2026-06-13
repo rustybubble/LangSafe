@@ -56,10 +56,10 @@ const STATUS_CONFIG = {
     color: "text-red-600",
   },
   timeout: {
-    dot: "bg-amber-500",
+    dot: "bg-sky-500",
     label: "Timeout",
     icon: AlertCircle,
-    color: "text-amber-600",
+    color: "text-sky-600",
   },
 } as const;
 

@@ -170,7 +170,7 @@ async function fetchArticleHTML(url: string): Promise<string> {
   const res = await fetch(url, {
     headers: {
       "User-Agent":
-        "TongueKeeper/1.0 (language preservation research; contact: tonguekeeper@example.com)",
+        "LangSafe/1.0 (language preservation research; contact: LangSafe@example.com)",
     },
   });
   if (!res.ok) throw new Error(`Wikipedia fetch failed: ${res.status}`);

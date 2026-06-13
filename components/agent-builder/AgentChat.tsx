@@ -268,7 +268,7 @@ export function AgentChat({ languageCode, languageName }: AgentChatProps) {
           {messages.length === 0 && !isLoading && (
             <div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground">
               <Sparkles className="h-8 w-8 mb-3 text-primary/40" />
-              <p className="text-sm font-medium mb-1">TongueKeeper Linguist</p>
+              <p className="text-sm font-medium mb-1">LangSafe Linguist</p>
               <p className="text-xs max-w-[280px]">
                 Ask about endangered language vocabulary, grammar patterns, or
                 explore 5,352 languages worldwide.

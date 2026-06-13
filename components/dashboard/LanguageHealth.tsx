@@ -39,14 +39,14 @@ const METRICS = [
   { key: "total_entries" as const, label: "Vocabulary Entries", icon: BookOpen, color: "#1E40AF", showTrend: true },
   { key: "total_sources" as const, label: "Sources Discovered", icon: Globe, color: "#047857", showTrend: false },
   { key: "total_audio_clips" as const, label: "Audio Clips", icon: Volume2, color: "#6D28D9", showTrend: false },
-  { key: "grammar_patterns" as const, label: "Grammar Patterns", icon: Braces, color: "#B45309", showTrend: false },
+  { key: "grammar_patterns" as const, label: "Grammar Patterns", icon: Braces, color: "#2563EB", showTrend: false },
 ];
 
 const SOURCE_TYPES = [
   { key: "dictionary" as const, label: "Dictionary", color: "#1E40AF" },
   { key: "academic" as const, label: "Academic", color: "#6D28D9" },
   { key: "video" as const, label: "Video", color: "#DC2626" },
-  { key: "archive" as const, label: "Archive", color: "#B45309" },
+  { key: "archive" as const, label: "Archive", color: "#2563EB" },
   { key: "wiki" as const, label: "Wiki", color: "#047857" },
 ];
 
@@ -87,7 +87,7 @@ function CoverageRing({
   const offset = circumference * (1 - percentage / 100);
 
   const color =
-    percentage > 10 ? "#10B981" : percentage > 5 ? "#F59E0B" : "#EF4444";
+    percentage > 10 ? "#10B981" : percentage > 5 ? "#0A84FF" : "#EF4444";
 
   return (
     <div className="flex flex-col items-center gap-1">
@@ -431,13 +431,13 @@ export function LanguageHealth({ language }: LanguageHealthProps) {
 
               {/* Status */}
               <div className="flex items-center gap-2">
-                <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-amber-500" />
+                <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-sky-500" />
                 <span>
                   Status:{" "}
                   <Badge
                     variant="outline"
                     className="border-0 px-1.5 py-0 text-[10px] font-medium"
-                    style={{ backgroundColor: "#F59E0B10", color: "#B45309" }}
+                    style={{ backgroundColor: "#0A84FF10", color: "#2563EB" }}
                   >
                     {ENDANGERMENT_LABELS[language.endangerment_status]}
                   </Badge>
@@ -463,7 +463,7 @@ export function LanguageHealth({ language }: LanguageHealthProps) {
         {/* ── Section 5: Footer ────────────────────────────────────────── */}
         <div className="border-t border-border/40 pt-3">
           <p className="text-center text-[11px] italic text-muted-foreground/60">
-            In minutes, TongueKeeper preserved what would take a linguist months
+            In minutes, LangSafe preserved what would take a linguist months
             to compile manually.
           </p>
         </div>

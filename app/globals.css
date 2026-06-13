@@ -52,48 +52,48 @@
   --color-agent-discovery: #1E40AF;
   --color-agent-extraction: #047857;
   --color-agent-crossref: #6D28D9;
-  --color-agent-orchestrator: #B45309;
+  --color-agent-orchestrator: #2563EB;
 }
 
 :root {
   --radius: 0.625rem;
 
-  /* Warm cream / parchment palette — refined */
-  --background: #FAF7F2;
-  --foreground: #1A1714;
+  /* Blue glass palette — refined */
+  --background: #F5F7FB;
+  --foreground: #0F172A;
   --card: #FFFFFF;
-  --card-foreground: #1A1714;
+  --card-foreground: #0F172A;
   --popover: #FFFFFF;
-  --popover-foreground: #1A1714;
-  --primary: #A3470A;
-  --primary-foreground: #FFFCF7;
-  --secondary: #EFEAE1;
-  --secondary-foreground: #3D3935;
-  --muted: #EFEAE1;
-  --muted-foreground: #6B6560;
-  --accent: #FDF2C4;
-  --accent-foreground: #7C3609;
-  --destructive: #C42B2B;
-  --border: #DDD6CC;
-  --input: #DDD6CC;
-  --ring: #A3470A;
+  --popover-foreground: #0F172A;
+  --primary: #0A84FF;
+  --primary-foreground: #FFFFFF;
+  --secondary: #EEF2F7;
+  --secondary-foreground: #172033;
+  --muted: #EEF2F7;
+  --muted-foreground: #667085;
+  --accent: #DCEBFF;
+  --accent-foreground: #0758B8;
+  --destructive: #D92D20;
+  --border: #D8E1EF;
+  --input: #D8E1EF;
+  --ring: #0A84FF;
 
   /* Chart / agent colors */
   --chart-1: #1E40AF;
   --chart-2: #047857;
   --chart-3: #6D28D9;
-  --chart-4: #A3470A;
-  --chart-5: #C42B2B;
+  --chart-4: #0A84FF;
+  --chart-5: #D92D20;
 
   /* Sidebar (left panel) */
-  --sidebar: #F3EDE4;
-  --sidebar-foreground: #1A1714;
-  --sidebar-primary: #A3470A;
-  --sidebar-primary-foreground: #FFFCF7;
-  --sidebar-accent: #EBE4D9;
-  --sidebar-accent-foreground: #1A1714;
-  --sidebar-border: #DDD6CC;
-  --sidebar-ring: #A3470A;
+  --sidebar: #F7FAFF;
+  --sidebar-foreground: #0F172A;
+  --sidebar-primary: #0A84FF;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #EAF2FF;
+  --sidebar-accent-foreground: #0F172A;
+  --sidebar-border: #D8E1EF;
+  --sidebar-ring: #0A84FF;
 }
 
 @layer base {
@@ -102,10 +102,12 @@
   }
   body {
     @apply bg-background text-foreground;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
   }
 }
 
-/* Warm scrollbar */
+/* Blue scrollbar */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -114,11 +116,11 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #CFC7BC;
+  background: #C8D4E5;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #B0A89E;
+  background: #94A3B8;
 }
 
 /* Resize handle */
@@ -180,8 +182,8 @@
 
 /* Subtle shimmer for active event section */
 @keyframes shimmer-border {
-  0%, 100% { border-color: #D9A04020; }
-  50% { border-color: #D9A04050; }
+  0%, 100% { border-color: #66B3FF20; }
+  50% { border-color: #66B3FF50; }
 }
 .animate-shimmer-border {
   animation: shimmer-border 2.5s ease-in-out infinite;
@@ -189,11 +191,11 @@
 
 /* Leaflet popup overrides */
 .leaflet-popup-content-wrapper {
-  background: #FAF7F2;
-  color: #1A1714;
+  background: #F5F7FB;
+  color: #0F172A;
   border-radius: 10px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-  border: 1px solid #DDD6CC;
+  border: 1px solid #D8E1EF;
   font-family: var(--font-plus-jakarta), sans-serif;
 }
 .leaflet-popup-content {
@@ -201,8 +203,8 @@
   line-height: 1.5;
 }
 .leaflet-popup-tip {
-  background: #FAF7F2;
-  border: 1px solid #DDD6CC;
+  background: #F5F7FB;
+  border: 1px solid #D8E1EF;
   border-top: none;
   border-right: none;
 }

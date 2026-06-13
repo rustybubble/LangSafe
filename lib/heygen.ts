@@ -1,5 +1,5 @@
 /**
- * TongueKeeper — HeyGen API Integration
+ * LangSafe — HeyGen API Integration
  * Generates pronunciation avatar videos for endangered language vocabulary.
  * Server-side only (uses API key).
  */
@@ -9,7 +9,7 @@ import { getErrorMessage } from "./utils/errors";
 const HEYGEN_API_KEY = process.env.HEYGEN_API_KEY || "";
 const CLOUDFLARE_WORKER_URL =
   process.env.CLOUDFLARE_WORKER_URL ||
-  "https://tonguekeeper-worker.lvalsote.workers.dev";
+  "https://LangSafe-worker.lvalsote.workers.dev";
 
 const HEYGEN_BASE = "https://api.heygen.com";
 const CACHE_KEY_PREFIX = "heygen:";

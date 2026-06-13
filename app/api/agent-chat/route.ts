@@ -3,7 +3,7 @@ import { apiError } from "@/lib/utils/api-response";
 
 const KIBANA_URL = process.env.KIBANA_URL;
 const KIBANA_API_KEY = process.env.KIBANA_API_KEY;
-const AGENT_ID = "tonguekeeper-linguist";
+const AGENT_ID = "LangSafe-linguist";
 
 export async function POST(request: NextRequest) {
   if (!KIBANA_URL || !KIBANA_API_KEY) {

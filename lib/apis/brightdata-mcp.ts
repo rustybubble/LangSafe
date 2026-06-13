@@ -23,7 +23,7 @@ async function getClient(): Promise<Client> {
     const token = process.env.BRIGHTDATA_API_TOKEN;
     if (!token) throw new Error("BRIGHTDATA_API_TOKEN not set");
 
-    const client = new Client({ name: "tonguekeeper", version: "1.0.0" });
+    const client = new Client({ name: "LangSafe", version: "1.0.0" });
     const transport = new StreamableHTTPClientTransport(
       new URL(`${MCP_BASE_URL}?token=${token}`)
     );

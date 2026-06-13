@@ -137,7 +137,7 @@ export async function runExtractionAgent(
 
       // Preserve external audio URLs to R2 (non-blocking per entry)
       const entriesWithAudio = verified.filter(
-        (e) => e.audio_url && !e.audio_url.includes("tonguekeeper-worker")
+        (e) => e.audio_url && !e.audio_url.includes("LangSafe-worker")
       );
       if (entriesWithAudio.length > 0) {
         const results = await Promise.allSettled(

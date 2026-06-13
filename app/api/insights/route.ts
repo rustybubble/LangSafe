@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSignificantTerms } from "@/lib/elastic";
 import { kvGet, kvSet, cacheKeys, hashQuery, TTL } from "@/lib/kv-cache";
 import { getErrorMessage } from "@/lib/utils/errors";
+import { DEMO_SIGNIFICANT_TERMS } from "@/lib/demo-data";
 
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
@@ -25,7 +26,7 @@ export async function GET(request: NextRequest) {
     kvSet(cacheKey, result, TTL.STATS);
     return NextResponse.json(result);
   } catch (err) {
-    console.warn("[/api/insights] Elastic error:", getErrorMessage(err));
-    return NextResponse.json({ clusters: [], pos: [], terms: [] });
+    console.warn("[/api/insights] Elastic unavailable, using demo data:", getErrorMessage(err));
+    return NextResponse.json(DEMO_SIGNIFICANT_TERMS);
   }
 }

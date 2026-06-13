@@ -91,7 +91,7 @@ const MIN_CONTENT_LENGTH = 200;
 const BROWSER_FIRST_TYPES: ExtractionType[] = ["dictionary"];
 
 const USER_AGENT =
-  "TongueKeeper/1.0 (endangered language preservation research)";
+  "LangSafe/1.0 (endangered language preservation research)";
 
 const PDFJS_TEXT_MIN_CHARS = 500; // pdfjs-dist text must be this long to trust over vision
 

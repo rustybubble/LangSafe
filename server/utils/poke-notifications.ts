@@ -1,5 +1,5 @@
 /**
- * TongueKeeper — Poke Notification Integration
+ * LangSafe — Poke Notification Integration
  * Sends iMessage/SMS notifications via Poke's inbound webhook API
  * for linguist alerts on new discoveries and pipeline milestones.
  */
@@ -55,7 +55,7 @@ export async function notifyNewSourceDiscovered(
   vocabCount: number
 ): Promise<void> {
   const msg = [
-    `🌊 TongueKeeper: New source discovered!`,
+    `🌊 LangSafe: New source discovered!`,
     `📖 ${title}`,
     `🔗 ${url}`,
     `📝 ${vocabCount} vocabulary entries extracted`,
@@ -70,7 +70,7 @@ export async function notifyDailyDigest(
   coveragePercent: number
 ): Promise<void> {
   const msg = [
-    `📊 TongueKeeper Daily Digest`,
+    `📊 LangSafe Daily Digest`,
     `Total entries: ${totalEntries}`,
     `New today: ${newToday}`,
     `Coverage: ${coveragePercent.toFixed(1)}%`,
@@ -85,7 +85,7 @@ export async function notifyPipelineComplete(
   durationSec: number
 ): Promise<void> {
   const msg = [
-    `✅ TongueKeeper Pipeline Complete`,
+    `✅ LangSafe Pipeline Complete`,
     `Sources processed: ${sources}`,
     `Entries preserved: ${entries}`,
     `Duration: ${durationSec.toFixed(0)}s`,

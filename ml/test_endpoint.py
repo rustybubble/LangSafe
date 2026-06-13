@@ -1,5 +1,5 @@
 """
-TongueKeeper — Test script for the RunPod Whisper endpoint.
+LangSafe — Test script for the RunPod Whisper endpoint.
 
 Usage:
     python test_endpoint.py --endpoint-id <ID> --api-key <KEY>
@@ -71,7 +71,7 @@ def poll_status(endpoint_id: str, api_key: str, job_id: str) -> dict:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Test TongueKeeper Whisper endpoint")
+    parser = argparse.ArgumentParser(description="Test LangSafe Whisper endpoint")
     parser.add_argument(
         "--endpoint-id",
         default=os.environ.get("RUNPOD_ENDPOINT_ID"),

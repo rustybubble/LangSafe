@@ -1,5 +1,5 @@
 /**
- * TongueKeeper — Cloudflare Worker
+ * LangSafe — Cloudflare Worker
  * Edge processing for audio storage (R2), caching (KV), and language detection.
  */
 
@@ -374,7 +374,7 @@ export default {
     // Health check
     if (method === "GET" && pathname === "/") {
       return jsonResponse(
-        { service: "tonguekeeper-worker", status: "ok", version: "1.0.0" },
+        { service: "LangSafe-worker", status: "ok", version: "1.0.0" },
         200,
         request,
         env

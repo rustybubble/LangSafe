@@ -1,6 +1,6 @@
 """
-TongueKeeper Discovery Agent -- Fetch.ai uAgent
-Wraps the TongueKeeper Discovery pipeline as a discoverable agent
+LangSafe Discovery Agent -- Fetch.ai uAgent
+Wraps the LangSafe Discovery pipeline as a discoverable agent
 on the Fetch.ai Agentverse / ASI:One marketplace.
 
 Usage:
@@ -48,7 +48,7 @@ from uagents_core.contrib.protocols.payment import (
 
 WS_SERVER_URL = os.getenv("WS_SERVER_URL", "http://localhost:3001")
 AGENT_SEED = os.getenv(
-    "FETCHAI_AGENT_SEED", "tonguekeeper-discovery-agent-seed-v1"
+    "FETCHAI_AGENT_SEED", "LangSafe-discovery-agent-seed-v1"
 )
 AGENT_PORT = int(os.getenv("FETCHAI_AGENT_PORT", "8010"))
 
@@ -62,7 +62,7 @@ PAYMENT_METHOD = "wallet"
 # ---------------------------------------------------------------------------
 
 agent = Agent(
-    name="TongueKeeper Discovery Agent",
+    name="LangSafe Discovery Agent",
     seed=AGENT_SEED,
     port=AGENT_PORT,
     mailbox=True,
@@ -74,12 +74,12 @@ payment_proto = Protocol(spec=payment_protocol_spec)
 
 
 # ---------------------------------------------------------------------------
-# Helper: Call TongueKeeper pipeline
+# Helper: Call LangSafe pipeline
 # ---------------------------------------------------------------------------
 
 
 def discover_sources(language: str, language_code: str) -> dict:
-    """Start the TongueKeeper discovery pipeline and collect discovered sources."""
+    """Start the LangSafe discovery pipeline and collect discovered sources."""
 
     # Start the pipeline
     res = requests.post(
@@ -158,7 +158,7 @@ async def handle_message(ctx: Context, sender: str, msg: ChatMessage):
                 ],
                 recipient=str(ctx.agent.address),
                 deadline_seconds=300,
-                description=f"TongueKeeper language discovery service",
+                description=f"LangSafe language discovery service",
             ),
         )
         ctx.logger.info(
@@ -265,7 +265,7 @@ agent.include(payment_proto, publish_manifest=True)
 
 @agent.on_event("startup")
 async def on_startup(ctx: Context):
-    ctx.logger.info("TongueKeeper Discovery Agent started")
+    ctx.logger.info("LangSafe Discovery Agent started")
     ctx.logger.info(f"  Address: {ctx.agent.address}")
     ctx.logger.info(f"  WS Server: {WS_SERVER_URL}")
     ctx.logger.info(f"  Protocols: Chat, Payment ({PRICE_PER_DISCOVERY} {PAYMENT_CURRENCY}/request)")

@@ -35,7 +35,7 @@ function buildMessage(body: Record<string, unknown>): string {
   switch (type) {
     case "source_discovered":
       return [
-        `🌊 TongueKeeper: New source discovered!`,
+        `🌊 LangSafe: New source discovered!`,
         `📖 ${body.title}`,
         `🔗 ${body.url}`,
         `📝 ${body.vocab_count} vocabulary entries extracted`,
@@ -43,7 +43,7 @@ function buildMessage(body: Record<string, unknown>): string {
 
     case "pipeline_complete":
       return [
-        `✅ TongueKeeper Pipeline Complete`,
+        `✅ LangSafe Pipeline Complete`,
         `Sources processed: ${body.sources}`,
         `Entries preserved: ${body.entries}`,
         `Duration: ${Number(body.duration_sec).toFixed(0)}s`,
@@ -51,7 +51,7 @@ function buildMessage(body: Record<string, unknown>): string {
 
     case "daily_digest":
       return [
-        `📊 TongueKeeper Daily Digest`,
+        `📊 LangSafe Daily Digest`,
         `Total entries: ${body.total_entries}`,
         `New today: ${body.new_today}`,
         `Coverage: ${Number(body.coverage_percent).toFixed(1)}%`,

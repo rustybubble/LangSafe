@@ -72,6 +72,11 @@ const PIPELINE_STEPS = [
     description:
       "All data flows into Elasticsearch with Jina AI embeddings for semantic search, reranking, and knowledge graph generation.",
   },
+  {
+    title: "Revitalize",
+    description:
+      "Community reviewers validate entries, flag sensitive material, and generate classroom-ready lesson packs from the archive.",
+  },
 ];
 
 const DATA_SOURCES: {
@@ -168,7 +173,7 @@ export default function AboutPage() {
               of thought.
             </h2>
             <p className="font-serif italic text-xl md:text-2xl text-primary/70 mb-8">
-              We keep them alive.
+              A LingHacks VII edition for keeping them alive.
             </p>
 
             {/* Decorative rule */}
@@ -180,10 +185,11 @@ export default function AboutPage() {
               taking with it centuries of irreplaceable knowledge, oral history,
               and cultural identity. The resources to preserve these languages
               exist, but they&rsquo;re scattered across obscure PDFs, YouTube
-              videos, academic papers, and dictionary websites. TongueKeeper
+              videos, academic papers, and dictionary websites. LangSafe
               deploys AI agents that autonomously discover, extract, and
               cross-reference these scattered fragments into a unified,
-              searchable archive. In minutes, not months.
+              searchable archive. This LingHacks build adds community review
+              and lesson generation so preservation can become revitalization.
             </p>
           </section>
 
@@ -213,7 +219,7 @@ export default function AboutPage() {
                   value: 100,
                   suffix: "%",
                   label: "Fully Automated",
-                  color: "#A3470A",
+                  color: "#0A84FF",
                 },
               ].map((stat) => (
                 <div

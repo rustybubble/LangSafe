@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const CLOUDFLARE_WORKER_URL =
   process.env.CLOUDFLARE_WORKER_URL ||
-  "https://tonguekeeper-worker.lvalsote.workers.dev";
+  "https://LangSafe-worker.lvalsote.workers.dev";
 const CACHE_KEY_PREFIX = "heygen:";
 
 /**

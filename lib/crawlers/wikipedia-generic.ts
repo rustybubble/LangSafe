@@ -2,7 +2,7 @@ import * as cheerio from "cheerio";
 import type { CrawlResponse } from "./dispatch";
 
 const USER_AGENT =
-  "TongueKeeper/1.0 (endangered language preservation research)";
+  "LangSafe/1.0 (endangered language preservation research)";
 
 /**
  * Generic Wikipedia language article crawler.

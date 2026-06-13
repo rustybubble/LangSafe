@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getGrammarStats } from "@/lib/elastic";
 import { kvGet, kvSet, cacheKeys, TTL } from "@/lib/kv-cache";
 import { getErrorMessage } from "@/lib/utils/errors";
+import { getDemoGrammarStats } from "@/lib/demo-data";
 
 export async function GET(request: NextRequest) {
   const language_code = request.nextUrl.searchParams.get("language_code") || undefined;
@@ -15,7 +16,7 @@ export async function GET(request: NextRequest) {
     kvSet(cacheKey, stats, TTL.STATS);
     return NextResponse.json(stats);
   } catch (err) {
-    console.error("[/api/grammar/stats] Error:", getErrorMessage(err));
-    return NextResponse.json({ total: 0, by_category: {} });
+    console.warn("[/api/grammar/stats] Elastic unavailable, using demo data:", getErrorMessage(err));
+    return NextResponse.json(getDemoGrammarStats());
   }
 }

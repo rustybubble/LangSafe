@@ -459,7 +459,7 @@ const ALL_ENTRIES: VocabularyEntry[] = [
 ];
 
 async function main() {
-  console.log(`🌺 TongueKeeper Core Preseed`);
+  console.log(`🌺 LangSafe Core Preseed`);
   console.log(`   ${ALL_ENTRIES.length} hand-verified Jejueo vocabulary entries`);
   console.log(`   Clusters: maritime, family, greetings, food, weather, nature, daily-life, numbers, animals, colors`);
   console.log();

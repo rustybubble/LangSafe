@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { search, browse } from "@/lib/elastic";
 import { getErrorMessage } from "@/lib/utils/errors";
+import { searchDemoVocabulary } from "@/lib/demo-data";
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,13 +20,21 @@ export async function POST(request: NextRequest) {
         const { entries, total } = await browse({ limit, offset, cluster, language_code });
         return NextResponse.json({ results: entries, total });
       } catch (err) {
-        console.warn("[/api/search] Browse failed:", getErrorMessage(err));
-        return NextResponse.json({ results: [], total: 0 });
+        console.warn("[/api/search] Browse failed, using demo data:", getErrorMessage(err));
+        const { entries, total } = searchDemoVocabulary("", {
+          limit,
+          offset,
+          language_code,
+          cluster,
+        });
+        return NextResponse.json({ results: entries, total });
       }
     }
 
     try {
-      let { entries, total } = await search(query, { limit, offset, language_code });
+      const searchResult = await search(query, { limit, offset, language_code });
+      let entries = searchResult.entries;
+      const { total } = searchResult;
 
       // Post-filter by semantic cluster if provided
       if (cluster && cluster !== "all") {
@@ -36,8 +45,14 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json({ results: entries, total });
     } catch (err) {
-      console.warn("[/api/search] Elastic unavailable:", getErrorMessage(err));
-      return NextResponse.json({ results: [], total: 0 });
+      console.warn("[/api/search] Elastic unavailable, using demo data:", getErrorMessage(err));
+      const { entries, total } = searchDemoVocabulary(query, {
+        limit,
+        offset,
+        language_code,
+        cluster,
+      });
+      return NextResponse.json({ results: entries, total });
     }
   } catch {
     return NextResponse.json(

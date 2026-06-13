@@ -1,5 +1,5 @@
 """
-TongueKeeper — ML FastAPI Service
+LangSafe — ML FastAPI Service
 Exposes the audio processing pipeline over HTTP.
 """
 
@@ -27,7 +27,7 @@ from audio_pipeline import (
     RUNPOD_API_KEY,
 )
 
-app = FastAPI(title="TongueKeeper ML Service", version="1.0.0")
+app = FastAPI(title="LangSafe ML Service", version="1.0.0")
 
 _cors_origins = [
     "http://localhost:3000",
@@ -74,7 +74,7 @@ class TranscribeRequest(BaseModel):
 @app.get("/health")
 async def health():
     return {
-        "service": "tonguekeeper-ml",
+        "service": "LangSafe-ml",
         "status": "ok",
         "runpod_configured": bool(RUNPOD_ENDPOINT_ID and RUNPOD_API_KEY),
     }

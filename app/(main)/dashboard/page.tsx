@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import Link from "next/link";
 import { AgentFeed } from "@/components/agent-feed/agent-feed";
 import { SearchPanel } from "@/components/search/search-panel";
 import { StatsBar } from "@/components/dashboard/stats-bar";
@@ -12,7 +13,7 @@ import { ResizableLayout } from "@/components/ui/resizable-layout";
 import { PreservationDialog } from "@/components/search/PreservationDialog";
 import { fetchLanguages } from "@/lib/api";
 import { Button } from "@/components/ui/button";
-import { Zap, Search, BookOpen, GitMerge } from "lucide-react";
+import { Zap, Search, BookOpen, GitMerge, GraduationCap } from "lucide-react";
 import type { LanguageEntry, LanguageMetadata } from "@/lib/types";
 
 function buildMetadata(lang: LanguageEntry): LanguageMetadata {
@@ -36,7 +37,7 @@ export default function Home() {
 }
 
 function DashboardContent() {
-  const { pipelineStatus, startPipeline } = useAgentEventsContext();
+  const { startPipeline } = useAgentEventsContext();
   const { activeLanguage, setActiveLanguage } = useActiveLanguage();
 
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -214,12 +215,12 @@ function WelcomeView({ onBeginClick }: { onBeginClick: () => void }) {
           {/* ── Heading ── */}
           <motion.div variants={fadeUp} className="text-center mb-10">
             <h2 className="font-serif text-4xl tracking-tight text-foreground mb-4">
-              Preserve Endangered Languages
+              Preserve, Verify, Teach
             </h2>
             <p className="text-base text-muted-foreground leading-relaxed max-w-lg mx-auto">
               Autonomous AI agents discover, extract, and cross-reference
-              linguistic data from across the web&mdash;building comprehensive
-              language archives in minutes.
+              linguistic data from across the web, then turn archive entries
+              into community-reviewed learning materials.
             </p>
           </motion.div>
 
@@ -248,7 +249,7 @@ function WelcomeView({ onBeginClick }: { onBeginClick: () => void }) {
                 {
                   value: stats.preserved,
                   suffix: "",
-                  label: "Preserved by TongueKeeper",
+                  label: "Preserved by LangSafe",
                 },
               ].map((stat) => (
                 <div
@@ -283,7 +284,7 @@ function WelcomeView({ onBeginClick }: { onBeginClick: () => void }) {
                 },
               },
             }}
-            className="mb-12"
+            className="mb-12 flex flex-wrap items-center justify-center gap-3"
           >
             <Button
               onClick={onBeginClick}
@@ -292,6 +293,12 @@ function WelcomeView({ onBeginClick }: { onBeginClick: () => void }) {
             >
               <Zap className="h-4 w-4" />
               Begin Preservation
+            </Button>
+            <Button asChild size="lg" variant="outline" className="gap-2 px-6 py-5 text-[15px] rounded-lg">
+              <Link href="/studio">
+                <GraduationCap className="h-4 w-4" />
+                Open Studio
+              </Link>
             </Button>
           </motion.div>
 
@@ -356,7 +363,7 @@ function WelcomeView({ onBeginClick }: { onBeginClick: () => void }) {
             variants={fadeUp}
             className="text-[11px] text-muted-foreground/40 text-center"
           >
-            Built for TreeHacks 2026
+            Built for LingHacks VII
           </motion.p>
         </motion.div>
       </div>

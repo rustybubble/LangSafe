@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSources } from "@/lib/elastic";
 import { kvGet, kvSet, cacheKeys, TTL } from "@/lib/kv-cache";
 import { getErrorMessage } from "@/lib/utils/errors";
+import { DEMO_SOURCES } from "@/lib/demo-data";
 
 export async function GET(request: NextRequest) {
   const language_code =
@@ -21,6 +22,6 @@ export async function GET(request: NextRequest) {
       "[/api/sources] Elastic unavailable:",
       getErrorMessage(err)
     );
-    return NextResponse.json({ sources: [] });
+    return NextResponse.json({ sources: DEMO_SOURCES });
   }
 }

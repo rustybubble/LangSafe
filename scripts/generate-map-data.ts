@@ -40,7 +40,7 @@ interface GeoJSONCollection {
 // ─── Main ───────────────────────────────────────────────────────────────────
 
 async function main(): Promise<void> {
-  console.log("\n🗺️  TongueKeeper — Generate Map Data\n");
+  console.log("\n🗺️  LangSafe — Generate Map Data\n");
 
   // Validate env
   if (!process.env.ELASTIC_URL || !process.env.ELASTIC_API_KEY) {

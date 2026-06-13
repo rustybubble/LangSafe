@@ -62,10 +62,10 @@ export function DistinctiveVocabulary({
   if (displayItems.length === 0) return null;
 
   return (
-    <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 px-3 py-2">
+    <div className="rounded-lg border border-sky-500/20 bg-sky-500/5 px-3 py-2">
       <div className="flex items-center gap-1.5 mb-1.5">
-        <Sparkles className="h-3 w-3 text-amber-500" />
-        <span className="text-[10px] font-medium uppercase tracking-wider text-amber-600 dark:text-amber-400">
+        <Sparkles className="h-3 w-3 text-sky-500" />
+        <span className="text-[10px] font-medium uppercase tracking-wider text-sky-600 dark:text-sky-400">
           Distinctive Patterns
         </span>
       </div>
@@ -85,7 +85,7 @@ export function DistinctiveVocabulary({
                 "cursor-pointer px-2 py-0 text-[10px] transition-all",
                 isActive
                   ? ""
-                  : "hover:bg-amber-500/10 hover:text-amber-700 hover:border-amber-500/30 dark:hover:text-amber-300",
+                  : "hover:bg-sky-500/10 hover:text-sky-700 hover:border-sky-500/30 dark:hover:text-sky-300",
                 type === "pos" && "border-dashed",
                 type === "term" && "border-dotted"
               )}

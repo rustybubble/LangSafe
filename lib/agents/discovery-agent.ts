@@ -241,7 +241,7 @@ async function fetchPageLinks(
 
   const res = await fetch(url, {
     signal: fetchSignal,
-    headers: { "User-Agent": "TongueKeeper/1.0 (language preservation bot)" },
+    headers: { "User-Agent": "LangSafe/1.0 (language preservation bot)" },
   });
 
   if (!res.ok) throw new Error(`HTTP ${res.status}`);

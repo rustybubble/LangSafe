@@ -1,5 +1,5 @@
 """
-TongueKeeper — Audio Processing Pipeline
+LangSafe — Audio Processing Pipeline
 Downloads YouTube audio, chunks it, uploads to R2, transcribes via RunPod Whisper,
 and corrects transcription for endangered languages using Claude.
 """
@@ -36,7 +36,7 @@ RUNPOD_ENDPOINT_ID = os.environ.get("RUNPOD_ENDPOINT_ID", "")
 RUNPOD_API_KEY = os.environ.get("RUNPOD_API_KEY", "")
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 CLOUDFLARE_WORKER_URL = os.environ.get(
-    "CLOUDFLARE_WORKER_URL", "https://tonguekeeper-worker.lvalsote.workers.dev"
+    "CLOUDFLARE_WORKER_URL", "https://LangSafe-worker.lvalsote.workers.dev"
 )
 WS_URL = os.environ.get("WS_URL", "http://localhost:3001")
 
@@ -875,7 +875,7 @@ def process_video(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="TongueKeeper Audio Pipeline — Process YouTube videos for endangered language preservation"
+        description="LangSafe Audio Pipeline — Process YouTube videos for endangered language preservation"
     )
     parser.add_argument("video_url", help="YouTube video URL to process")
     parser.add_argument("--language", default="en", help="Whisper language code (default: en)")

@@ -110,7 +110,7 @@ async function checkUrl(url: string): Promise<boolean> {
       signal: AbortSignal.timeout(HEAD_TIMEOUT_MS),
       redirect: "follow",
       headers: {
-        "User-Agent": "TongueKeeper/1.0 (endangered-language-preservation)",
+        "User-Agent": "LangSafe/1.0 (endangered-language-preservation)",
       },
     });
     return res.ok;
@@ -261,7 +261,7 @@ async function updateElastic(
 // ─── Main ───────────────────────────────────────────────────────────────────
 
 async function main(): Promise<void> {
-  console.log("\n🔍 TongueKeeper — Prescan Languages\n");
+  console.log("\n🔍 LangSafe — Prescan Languages\n");
 
   // Validate environment
   const requiredVars = ["ELASTIC_URL", "ELASTIC_API_KEY", "PERPLEXITY_API_KEY"];

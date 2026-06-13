@@ -9,9 +9,9 @@ if (!KIBANA_URL || !KIBANA_API_KEY) {
   process.exit(1);
 }
 
-const AGENT_ID = "tonguekeeper-linguist";
+const AGENT_ID = "LangSafe-linguist";
 
-const AGENT_INSTRUCTIONS = `You are TongueKeeper Linguist, an expert assistant for exploring and understanding endangered languages.
+const AGENT_INSTRUCTIONS = `You are LangSafe Linguist, an expert assistant for exploring and understanding endangered languages.
 
 You have access to 3 Elasticsearch indices:
 
@@ -74,7 +74,7 @@ async function kibanaRequest(method: string, path: string, body?: unknown) {
 }
 
 async function main() {
-  console.log("Setting up TongueKeeper Agent Builder...\n");
+  console.log("Setting up LangSafe Agent Builder...\n");
 
   // Check if agent already exists
   const { results: agents } = await kibanaRequest("GET", "/api/agent_builder/agents");
@@ -83,7 +83,7 @@ async function main() {
   if (existing) {
     console.log(`Agent "${AGENT_ID}" already exists. Updating...`);
     await kibanaRequest("PUT", `/api/agent_builder/agents/${AGENT_ID}`, {
-      name: "TongueKeeper Linguist",
+      name: "LangSafe Linguist",
       description: "Expert assistant for exploring endangered language vocabulary, grammar, and global language endangerment data",
       configuration: {
         instructions: AGENT_INSTRUCTIONS,
@@ -106,7 +106,7 @@ async function main() {
     console.log(`Creating agent "${AGENT_ID}"...`);
     await kibanaRequest("POST", "/api/agent_builder/agents", {
       id: AGENT_ID,
-      name: "TongueKeeper Linguist",
+      name: "LangSafe Linguist",
       description: "Expert assistant for exploring endangered language vocabulary, grammar, and global language endangerment data",
       configuration: {
         instructions: AGENT_INSTRUCTIONS,

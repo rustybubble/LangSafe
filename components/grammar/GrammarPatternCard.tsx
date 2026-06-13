@@ -9,17 +9,17 @@ const CATEGORY_COLORS: Record<string, string> = {
   verb_conjugation: "#047857",
   particle_usage: "#1E40AF",
   sentence_structure: "#6D28D9",
-  honorific_system: "#B45309",
+  honorific_system: "#2563EB",
   negation: "#DC2626",
   question_formation: "#0891B2",
   phonological_rule: "#7C3AED",
-  morphological_rule: "#C2410C",
+  morphological_rule: "#DB2777",
   other: "#78716C",
 };
 
 const CONFIDENCE_COLORS: Record<string, string> = {
   high: "text-green-600",
-  medium: "text-amber-600",
+  medium: "text-sky-600",
   low: "text-red-500",
 };
 

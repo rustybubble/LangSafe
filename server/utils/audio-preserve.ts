@@ -10,7 +10,7 @@ import path from "path";
 
 const R2_WORKER_URL =
   process.env.CLOUDFLARE_WORKER_URL ||
-  "https://tonguekeeper-worker.lvalsote.workers.dev";
+  "https://LangSafe-worker.lvalsote.workers.dev";
 
 const AUDIO_DOWNLOAD_TIMEOUT_MS = 30_000;
 const MAX_AUDIO_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
@@ -38,11 +38,11 @@ export async function preserveAudioToR2(
   languageCode?: string
 ): Promise<string | null> {
   // Skip URLs that are already on our R2 worker
-  if (externalUrl.includes("tonguekeeper-worker")) return externalUrl;
+  if (externalUrl.includes("LangSafe-worker")) return externalUrl;
 
   try {
     const res = await fetch(externalUrl, {
-      headers: { "User-Agent": "TongueKeeper/1.0 (language preservation)" },
+      headers: { "User-Agent": "LangSafe/1.0 (language preservation)" },
       signal: AbortSignal.timeout(AUDIO_DOWNLOAD_TIMEOUT_MS),
     });
 

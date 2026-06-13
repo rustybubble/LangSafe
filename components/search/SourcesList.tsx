@@ -25,7 +25,7 @@ const SOURCE_TYPE_META: Record<string, { label: string; color: string }> = {
   dictionary: { label: "Dictionary", color: "#1E40AF" },
   academic: { label: "Academic", color: "#6D28D9" },
   video: { label: "Video", color: "#DC2626" },
-  archive: { label: "Archive", color: "#B45309" },
+  archive: { label: "Archive", color: "#2563EB" },
   wiki: { label: "Wiki", color: "#047857" },
 };
 

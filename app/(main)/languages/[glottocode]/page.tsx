@@ -393,7 +393,7 @@ function EmptyState({ language }: { language: LanguageEntry }) {
             No preservation data yet
           </h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            TongueKeeper&apos;s AI agents will discover and compile vocabulary,
+            LangSafe&apos;s AI agents will discover and compile vocabulary,
             grammar patterns, and audio recordings for{" "}
             <strong>{language.name}</strong>.
           </p>

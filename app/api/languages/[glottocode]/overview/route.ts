@@ -5,6 +5,7 @@ import { generateLanguageOverview } from "@/lib/apis/overview-generator";
 import type { LanguageEntry, LanguageOverview } from "@/lib/types";
 import { getErrorMessage } from "@/lib/utils/errors";
 import { apiError } from "@/lib/utils/api-response";
+import { getDemoLanguage, getDemoOverview } from "@/lib/demo-data";
 
 export async function GET(
   _request: NextRequest,
@@ -26,6 +27,10 @@ export async function GET(
     if (!language) {
       language = await getLanguage(glottocode);
       if (!language) {
+        const demoLanguage = getDemoLanguage(glottocode);
+        if (demoLanguage) language = demoLanguage;
+      }
+      if (!language) {
         return apiError("Language not found", 404);
       }
     }
@@ -42,6 +47,8 @@ export async function GET(
       `[/api/languages/${glottocode}/overview] Failed:`,
       getErrorMessage(err)
     );
+    const demoOverview = getDemoOverview(glottocode);
+    if (demoOverview) return NextResponse.json(demoOverview);
     return apiError("Failed to generate language overview", 500);
   }
 }

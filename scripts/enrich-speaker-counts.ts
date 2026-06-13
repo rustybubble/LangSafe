@@ -10,7 +10,7 @@ import { getClient } from "../lib/elastic";
 const LANGUAGES_INDEX = "languages";
 const BATCH_SIZE = 500;
 const WIKIDATA_SPARQL = "https://query.wikidata.org/sparql";
-const USER_AGENT = "TongueKeeper/1.0 (https://github.com/tonguekeeper; endangered-language-preservation)";
+const USER_AGENT = "LangSafe/1.0 (https://github.com/LangSafe; endangered-language-preservation)";
 
 // ---------------------------------------------------------------------------
 // Wikidata SPARQL queries

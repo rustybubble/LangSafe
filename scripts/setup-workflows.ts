@@ -9,10 +9,10 @@ if (!KIBANA_URL || !KIBANA_API_KEY) {
   process.exit(1);
 }
 
-const WORKFLOW_NAME = "TongueKeeper Data Quality Monitor";
+const WORKFLOW_NAME = "LangSafe Data Quality Monitor";
 
 const WORKFLOW_YAML = `name: ${WORKFLOW_NAME}
-description: Data quality check for the TongueKeeper vocabulary archive — counts total entries, missing embeddings, and empty headwords, then saves a report to Elasticsearch.
+description: Data quality check for the LangSafe vocabulary archive — counts total entries, missing embeddings, and empty headwords, then saves a report to Elasticsearch.
 enabled: true
 triggers:
   - type: manual

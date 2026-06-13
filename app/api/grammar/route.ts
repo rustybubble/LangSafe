@@ -2,18 +2,29 @@ import { NextRequest, NextResponse } from "next/server";
 import { searchGrammarPatterns } from "@/lib/elastic";
 import type { GrammarCategory } from "@/lib/types";
 import { getErrorMessage } from "@/lib/utils/errors";
+import { searchDemoGrammar } from "@/lib/demo-data";
 
 export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const { query, category, limit = 20, offset = 0, language_code } = body as {
-      query?: string;
-      category?: GrammarCategory;
-      limit?: number;
-      offset?: number;
-      language_code?: string;
-    };
+  let body: {
+    query?: string;
+    category?: GrammarCategory;
+    limit?: number;
+    offset?: number;
+    language_code?: string;
+  };
 
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json(
+      { error: "Invalid request body" },
+      { status: 400 }
+    );
+  }
+
+  const { query, category, limit = 20, offset = 0, language_code } = body;
+
+  try {
     const { patterns, total } = await searchGrammarPatterns(
       query || "",
       { limit, offset, category, language_code }
@@ -21,7 +32,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ patterns, total });
   } catch (err) {
-    console.error("[/api/grammar] Error:", getErrorMessage(err));
-    return NextResponse.json({ patterns: [], total: 0 });
+    console.warn("[/api/grammar] Elastic unavailable, using demo data:", getErrorMessage(err));
+    return NextResponse.json(
+      searchDemoGrammar(query || "", { category, limit, offset, language_code })
+    );
   }
 }

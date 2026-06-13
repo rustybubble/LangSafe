@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { apiError } from "@/lib/utils/api-response";
 import { getErrorMessage } from "@/lib/utils/errors";
 import type { PipelineRunArtifact } from "@/lib/types";
+import { getDemoPipelineRuns } from "@/lib/demo-data";
 
 const CLOUDFLARE_WORKER_URL = process.env.CLOUDFLARE_WORKER_URL || "";
 
@@ -12,7 +12,7 @@ export async function GET(
   const { languageCode } = await params;
 
   if (!CLOUDFLARE_WORKER_URL) {
-    return NextResponse.json([] as PipelineRunArtifact[]);
+    return NextResponse.json(getDemoPipelineRuns(languageCode));
   }
 
   try {
@@ -55,6 +55,6 @@ export async function GET(
     );
   } catch (err) {
     console.warn("[API] Pipeline runs fetch failed:", getErrorMessage(err));
-    return NextResponse.json([] as PipelineRunArtifact[]);
+    return NextResponse.json(getDemoPipelineRuns(languageCode));
   }
 }

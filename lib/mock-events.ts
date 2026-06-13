@@ -2,7 +2,7 @@ import { AgentEvent, VocabularyEntry, LanguageStats } from "./types";
 import type { GraphData } from "./api";
 
 // ---------------------------------------------------------------------------
-// 30-event simulation of a full TongueKeeper agent run for Jejueo (제주어)
+// 30-event simulation of a full LangSafe agent run for Jejueo (제주어)
 // ---------------------------------------------------------------------------
 
 const RUN_EVENTS: Omit<AgentEvent, "id" | "timestamp">[] = [

@@ -565,7 +565,7 @@ async function backfillJeju(client: Client): Promise<void> {
 // ---------------------------------------------------------------------------
 
 async function main() {
-  console.log("\n🌍 TongueKeeper — Glottolog CLDF Ingestion\n");
+  console.log("\n🌍 LangSafe — Glottolog CLDF Ingestion\n");
 
   // ── Connect to Elasticsearch ──────────────────────────────────────────────
   const node = process.env.ELASTIC_URL;

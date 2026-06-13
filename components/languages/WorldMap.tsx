@@ -206,7 +206,7 @@ function PopupContent({ lang }: { lang: LanguageEntry }) {
         style={{
           fontSize: 15,
           fontWeight: 600,
-          color: "#1A1714",
+          color: "#0F172A",
           marginBottom: 4,
           fontFamily: "var(--font-dm-serif), serif",
         }}
@@ -243,7 +243,7 @@ function PopupContent({ lang }: { lang: LanguageEntry }) {
       </span>
 
       {/* Stats */}
-      <div style={{ fontSize: 11, color: "#6B6560", marginTop: 6, lineHeight: 1.6 }}>
+      <div style={{ fontSize: 11, color: "#667085", marginTop: 6, lineHeight: 1.6 }}>
         <div>
           {lang.speaker_count != null && lang.speaker_count > 0
             ? `~${lang.speaker_count.toLocaleString()} speakers`
@@ -283,7 +283,7 @@ function PopupContent({ lang }: { lang: LanguageEntry }) {
           marginTop: 8,
           fontSize: 11,
           fontWeight: 600,
-          color: "#A3470A",
+          color: "#0A84FF",
           textDecoration: "none",
         }}
       >

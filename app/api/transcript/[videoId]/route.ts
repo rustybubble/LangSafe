@@ -4,7 +4,7 @@ import { apiError } from "@/lib/utils/api-response";
 
 const CLOUDFLARE_WORKER_URL =
   process.env.CLOUDFLARE_WORKER_URL ||
-  "https://tonguekeeper-worker.lvalsote.workers.dev";
+  "https://LangSafe-worker.lvalsote.workers.dev";
 
 export async function GET(
   _request: NextRequest,

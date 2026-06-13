@@ -3,13 +3,13 @@ import { searchLanguages } from "@/lib/elastic";
 import { kvGet, kvSet, cacheKeys, hashQuery, TTL } from "@/lib/kv-cache";
 import type { LanguageFilters, EndangermentStatus, LanguageBrowserResponse } from "@/lib/types";
 import { getErrorMessage } from "@/lib/utils/errors";
-import { apiError } from "@/lib/utils/api-response";
+import { filterDemoLanguages } from "@/lib/demo-data";
 
 export async function GET(request: NextRequest) {
+  const filters: LanguageFilters = {};
+
   try {
     const params = request.nextUrl.searchParams;
-
-    const filters: LanguageFilters = {};
 
     const search = params.get("search");
     if (search) filters.search = search;
@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(result);
   } catch (err) {
-    console.warn("[/api/languages] Failed:", getErrorMessage(err));
-    return apiError("Failed to fetch languages", 500);
+    console.warn("[/api/languages] Elastic unavailable, using demo data:", getErrorMessage(err));
+    return NextResponse.json(filterDemoLanguages(filters));
   }
 }

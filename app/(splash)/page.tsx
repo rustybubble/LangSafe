@@ -1,18 +1,24 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { LogoIcon } from "@/components/navigation/TongueKeeperLogo";
+import { motion, useInView } from "framer-motion";
+import {
+  ArrowRight,
+  BookOpenCheck,
+  ChevronDown,
+  GitMerge,
+  Search,
+  ShieldCheck,
+} from "lucide-react";
+import { LogoIcon } from "@/components/navigation/LangSafeLogo";
 import { SponsorFooter } from "@/components/dashboard/sponsor-footer";
 import { fetchLanguages } from "@/lib/api";
-import { Search, BookOpen, GitMerge, ChevronDown } from "lucide-react";
-
-// ── Animation Variants ───────────────────────────────────────────────────
 
 const stagger = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.15, delayChildren: 0.3 } },
+  visible: { transition: { staggerChildren: 0.12, delayChildren: 0.2 } },
 };
 
 const fadeUp = {
@@ -23,17 +29,6 @@ const fadeUp = {
     transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] as const },
   },
 };
-
-const logoReveal = {
-  hidden: { opacity: 0, scale: 0.4 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: { type: "spring" as const, stiffness: 120, damping: 14 },
-  },
-};
-
-// ── Animated Counter ─────────────────────────────────────────────────────
 
 function AnimatedCount({
   target,
@@ -48,7 +43,7 @@ function AnimatedCount({
 
   useEffect(() => {
     if (!inView || target === 0) return;
-    const duration = 1800;
+    const duration = 1600;
     const start = performance.now();
 
     function step(now: number) {
@@ -70,39 +65,35 @@ function AnimatedCount({
   );
 }
 
-// ── Features ─────────────────────────────────────────────────────────────
-
 const FEATURES = [
   {
     icon: Search,
     title: "Discover",
     description:
-      "Autonomous agents scour the web for dictionaries, grammars, recordings, and academic papers in endangered languages.",
+      "Agents locate dictionaries, papers, recordings, and community archives for endangered languages.",
     color: "#1E40AF",
   },
   {
-    icon: BookOpen,
-    title: "Extract",
+    icon: GitMerge,
+    title: "Cross-reference",
     description:
-      "AI-powered extraction pulls vocabulary, grammar patterns, and audio from diverse sources into structured archives.",
-    color: "#047857",
+      "Vocabulary and grammar are merged across sources with provenance, confidence, and semantic graph links.",
+    color: "#6D28D9",
   },
   {
-    icon: GitMerge,
-    title: "Cross-Reference",
+    icon: BookOpenCheck,
+    title: "Revitalize",
     description:
-      "Intelligent verification links entries across sources, validating accuracy and building comprehensive language records.",
-    color: "#6D28D9",
+      "Community review turns archive entries into lesson packs, flashcards, and oral-history prompts.",
+    color: "#047857",
   },
 ];
 
-// ── Page ─────────────────────────────────────────────────────────────────
-
 export default function SplashPage() {
   const [stats, setStats] = useState({
-    totalEndangered: 0,
-    criticallyEndangered: 0,
-    preserved: 0,
+    totalEndangered: 3142,
+    criticallyEndangered: 577,
+    preserved: 4,
   });
 
   useEffect(() => {
@@ -116,202 +107,139 @@ export default function SplashPage() {
   }, []);
 
   return (
-    <div className="flex min-h-screen flex-col">
-      {/* ── Hero ─────────────────────────────────────────────── */}
-      <section
-        className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6"
-        style={{ backgroundColor: "#1A1714" }}
-      >
-        {/* Ambient glow — warm radiance emanating from center */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(ellipse 60% 50% at 50% 42%, rgba(163, 71, 10, 0.12), transparent)",
-          }}
+    <div className="flex min-h-screen flex-col bg-background">
+      <section className="relative flex min-h-[86svh] flex-col justify-center overflow-hidden px-6 py-16">
+        <Image
+          src="/assets/linghacks-hero.png"
+          alt="An elder speaker and student documenting language at an archive table"
+          fill
+          priority
+          className="object-cover object-center"
+          sizes="100vw"
         />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(4,22,49,0.92),rgba(6,40,82,0.72)_38%,rgba(10,132,255,0.18)_72%,rgba(10,132,255,0.08))]" />
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background to-transparent" />
 
-        {/* Grain texture overlay */}
-        <div
-          className="absolute inset-0 pointer-events-none opacity-[0.035]"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-          }}
-        />
-
-        {/* Hero content */}
         <motion.div
-          className="relative z-10 flex flex-col items-center gap-8 max-w-2xl text-center"
+          className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-start gap-7"
           variants={stagger}
           initial="hidden"
           animate="visible"
         >
-          {/* Logo with glow halo */}
-          <motion.div variants={logoReveal} className="relative">
-            <div
-              className="absolute inset-0 rounded-full blur-3xl pointer-events-none"
-              style={{
-                background: "rgba(163, 71, 10, 0.2)",
-                transform: "scale(3)",
-              }}
-            />
-            <LogoIcon size={80} className="relative text-[#A3470A]" />
-          </motion.div>
-
-          {/* Wordmark */}
-          <motion.h1
-            variants={fadeUp}
-            className="font-serif text-5xl md:text-6xl lg:text-7xl tracking-tight"
-            style={{ color: "#FFFCF7" }}
-          >
-            Tongue<span style={{ color: "#A3470A" }}>Keeper</span>
-          </motion.h1>
-
-          {/* Tagline */}
-          <motion.div variants={fadeUp} className="space-y-1.5">
-            <p
-              className="text-lg md:text-xl leading-relaxed"
-              style={{ color: "rgba(255, 252, 247, 0.65)" }}
-            >
-              5,000+ languages are disappearing.
-            </p>
-            <p
-              className="text-lg md:text-xl leading-relaxed font-serif italic"
-              style={{ color: "rgba(255, 252, 247, 0.4)" }}
-            >
-              We're keeping the flame alive.
-            </p>
-          </motion.div>
-
-          {/* CTAs */}
           <motion.div
             variants={fadeUp}
-            className="flex flex-col sm:flex-row items-center gap-3 mt-2"
+            className="inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/10 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.16em] text-white/78 backdrop-blur-md"
+          >
+            <ShieldCheck className="h-3 w-3 text-[#66B3FF]" />
+            LingHacks VII · June 13-14, 2026
+          </motion.div>
+
+          <motion.div variants={fadeUp} className="max-w-2xl">
+            <div className="mb-5 flex items-center gap-3">
+              <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/12 text-[#66B3FF] backdrop-blur-md">
+                <LogoIcon size={34} />
+              </span>
+              <span className="text-lg font-semibold tracking-tight text-white/78">
+                LangSafe
+              </span>
+            </div>
+            <h1 className="font-serif text-5xl leading-[0.96] tracking-tight text-white md:text-7xl">
+              LangSafe{" "}
+              <span className="block text-[#66B3FF]">LingHacks</span>
+            </h1>
+            <p className="mt-6 max-w-xl text-base leading-7 text-white/72 md:text-lg">
+              AI agents preserve endangered-language fragments from the web,
+              then communities verify them and turn them into learning material.
+            </p>
+          </motion.div>
+
+          <motion.div
+            variants={fadeUp}
+            className="flex flex-col gap-3 sm:flex-row"
           >
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-2 rounded-lg bg-[#A3470A] px-7 py-3 text-sm font-medium text-[#FFFCF7] shadow-lg shadow-[#A3470A]/20 hover:bg-[#B85210] hover:shadow-xl hover:shadow-[#A3470A]/30 transition-all duration-200"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#0A84FF] px-6 text-sm font-medium text-white shadow-[0_14px_34px_rgba(10,132,255,0.28)] transition-colors hover:bg-[#0071E3]"
             >
-              Start Preserving
+              Open Demo
+              <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
-              href="/languages"
-              className="inline-flex items-center gap-2 rounded-lg border border-[#FFFCF7]/15 px-7 py-3 text-sm font-medium text-[#FFFCF7]/60 hover:border-[#FFFCF7]/30 hover:text-[#FFFCF7] transition-all duration-200"
+              href="/studio"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-white/20 bg-white/8 px-6 text-sm font-medium text-white/82 backdrop-blur-sm transition-colors hover:bg-white/14 hover:text-white"
             >
-              Browse Languages
+              Revitalization Studio
             </Link>
           </motion.div>
-        </motion.div>
 
-        {/* Scroll indicator */}
-        <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2.2, duration: 0.8 }}
-        >
           <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{
-              duration: 2.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
+            variants={fadeUp}
+            className="grid w-full max-w-2xl grid-cols-3 gap-3 pt-2"
           >
-            <ChevronDown
-              className="h-5 w-5"
-              style={{ color: "rgba(255, 252, 247, 0.15)" }}
-            />
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* ── Stats ────────────────────────────────────────────── */}
-      <section className="bg-background">
-        <div className="max-w-4xl mx-auto px-6 py-16 md:py-20">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center">
             {[
-              {
-                value: stats.totalEndangered,
-                suffix: "+",
-                label: "Languages at Risk",
-              },
-              {
-                value: stats.criticallyEndangered,
-                suffix: "",
-                label: "Critically Endangered",
-              },
-              {
-                value: stats.preserved,
-                suffix: "",
-                label: "Languages Preserved",
-              },
-              { value: 100, suffix: "%", label: "Fully Automated" },
+              { value: stats.totalEndangered, suffix: "+", label: "at risk" },
+              { value: stats.criticallyEndangered, suffix: "", label: "critical" },
+              { value: stats.preserved, suffix: "", label: "demo archives" },
             ].map((stat) => (
               <div
                 key={stat.label}
-                className="flex flex-col items-center gap-1.5"
+                className="border-t border-white/16 pt-3 text-white"
               >
-                <span className="font-serif text-3xl md:text-4xl tabular-nums text-foreground">
-                  <AnimatedCount
-                    target={stat.value}
-                    suffix={stat.suffix}
-                  />
-                </span>
-                <span className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground/50">
+                <div className="font-serif text-3xl tabular-nums">
+                  <AnimatedCount target={stat.value} suffix={stat.suffix} />
+                </div>
+                <div className="mt-1 text-[10px] uppercase tracking-[0.16em] text-white/48">
                   {stat.label}
-                </span>
+                </div>
               </div>
             ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
+
+        <motion.div
+          className="absolute bottom-5 left-1/2 z-10 -translate-x-1/2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.4, duration: 0.8 }}
+        >
+          <ChevronDown className="h-5 w-5 text-white/25" />
+        </motion.div>
       </section>
 
-      {/* ── Features ──────────────────────────────────────────── */}
-      <section className="bg-background pb-20">
-        <div className="max-w-4xl mx-auto px-6">
-          {/* Editorial section heading */}
-          <div className="flex items-center gap-4 mb-10">
-            <div className="flex-1 h-px bg-border/30" />
-            <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/40 shrink-0 select-none">
-              How it works
+      <section className="bg-background py-14">
+        <div className="mx-auto max-w-5xl px-6">
+          <div className="mb-8 flex items-center gap-4">
+            <div className="h-px flex-1 bg-border/40" />
+            <p className="shrink-0 text-[10px] uppercase tracking-[0.2em] text-muted-foreground/45">
+              LingHacks demo loop
             </p>
-            <div className="flex-1 h-px bg-border/30" />
+            <div className="h-px flex-1 bg-border/40" />
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid gap-5 md:grid-cols-3">
             {FEATURES.map((feature, i) => (
               <motion.div
                 key={feature.title}
-                className="group relative rounded-lg border border-border/40 bg-card/50 p-6 transition-all duration-200 hover:border-border hover:shadow-sm"
+                className="relative rounded-lg border border-border/50 bg-card/70 p-6"
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
+                transition={{ duration: 0.45, delay: i * 0.08 }}
               >
-                {/* Agent color accent line */}
                 <div
-                  className="absolute top-0 left-6 right-6 h-px"
-                  style={{
-                    backgroundColor: feature.color,
-                    opacity: 0.35,
-                  }}
+                  className="absolute left-6 right-6 top-0 h-px"
+                  style={{ backgroundColor: feature.color, opacity: 0.4 }}
                 />
-
                 <div
-                  className="flex h-9 w-9 items-center justify-center rounded-md mb-4"
-                  style={{ backgroundColor: `${feature.color}10` }}
+                  className="mb-4 flex h-9 w-9 items-center justify-center rounded-md"
+                  style={{ backgroundColor: `${feature.color}12` }}
                 >
-                  <feature.icon
-                    className="h-4 w-4"
-                    style={{ color: feature.color }}
-                  />
+                  <feature.icon className="h-4 w-4" style={{ color: feature.color }} />
                 </div>
-
-                <h3 className="font-serif text-base tracking-tight text-foreground mb-2">
+                <h3 className="font-serif text-base tracking-tight">
                   {feature.title}
                 </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
                   {feature.description}
                 </p>
               </motion.div>
@@ -320,7 +248,6 @@ export default function SplashPage() {
         </div>
       </section>
 
-      {/* ── Footer ────────────────────────────────────────────── */}
       <SponsorFooter />
     </div>
   );

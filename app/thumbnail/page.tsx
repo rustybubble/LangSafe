@@ -1,4 +1,4 @@
-import { LogoIcon } from "@/components/navigation/TongueKeeperLogo";
+import { LogoIcon } from "@/components/navigation/LangSafeLogo";
 
 // --- Data ---
 
@@ -10,14 +10,14 @@ const MOCK_EVENTS = [
   { time: "14:23:28", agent: "EXTRACTION", color: "#047857", action: "save grammar", detail: "+3 patterns" },
   { time: "14:23:31", agent: "CROSS-REF", color: "#6D28D9", action: "merging", detail: "deduplicated 12 entries" },
   { time: "14:23:35", agent: "CROSS-REF", color: "#6D28D9", action: "verified", detail: "reliability score: 0.94" },
-  { time: "14:23:38", agent: "ORCHESTRATOR", color: "#B45309", action: "complete", detail: "pipeline finished" },
+  { time: "14:23:38", agent: "ORCHESTRATOR", color: "#2563EB", action: "complete", detail: "pipeline finished" },
 ];
 
 const AGENT_DOTS = [
   { color: "#1E40AF", label: "Discovery" },
   { color: "#047857", label: "Extraction" },
   { color: "#6D28D9", label: "Cross-Ref" },
-  { color: "#B45309", label: "Orchestrator" },
+  { color: "#2563EB", label: "Orchestrator" },
 ];
 
 const STATS = [
@@ -102,7 +102,7 @@ export default function ThumbnailPage() {
       style={{
         width: "1200px",
         height: "800px",
-        backgroundColor: "#1A1714",
+        backgroundColor: "#0F172A",
         display: "grid",
         gridTemplateColumns: "55% 45%",
       }}
@@ -138,13 +138,13 @@ export default function ThumbnailPage() {
         ))}
       </svg>
 
-      {/* Layer 2: Dual radial glows */}
+      {/* Layer 2: Blue editorial wash */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
           background: [
-            "radial-gradient(ellipse 55% 65% at 30% 45%, rgba(163, 71, 10, 0.18) 0%, transparent 65%)",
-            "radial-gradient(ellipse 40% 50% at 78% 50%, rgba(30, 64, 175, 0.05) 0%, transparent 60%)",
+            "linear-gradient(115deg, rgba(10, 132, 255, 0.18), transparent 52%)",
+            "linear-gradient(270deg, rgba(37, 99, 235, 0.14), transparent 58%)",
           ].join(", "),
         }}
       />
@@ -166,11 +166,11 @@ export default function ThumbnailPage() {
           <div
             className="absolute inset-0 blur-2xl"
             style={{
-              backgroundColor: "rgba(163, 71, 10, 0.25)",
+              backgroundColor: "rgba(10, 132, 255, 0.25)",
               transform: "scale(2.5)",
             }}
           />
-          <LogoIcon size={140} className="relative text-[#A3470A]" />
+          <LogoIcon size={140} className="relative text-[#0A84FF]" />
         </div>
 
         {/* Title */}
@@ -178,14 +178,14 @@ export default function ThumbnailPage() {
           className="font-serif tracking-tight"
           style={{ fontSize: "88px", lineHeight: 1 }}
         >
-          <span style={{ color: "#FFFCF7" }}>Tongue</span>
+          <span style={{ color: "#FFFFFF" }}>Lang</span>
           <span
             style={{
-              color: "#A3470A",
-              textShadow: "0 2px 40px rgba(163, 71, 10, 0.3)",
+              color: "#0A84FF",
+              textShadow: "0 2px 40px rgba(10, 132, 255, 0.3)",
             }}
           >
-            Keeper
+            Safe
           </span>
         </h1>
 
@@ -196,7 +196,7 @@ export default function ThumbnailPage() {
             style={{
               fontSize: "56px",
               lineHeight: 1,
-              color: "#FFFCF7",
+              color: "#FFFFFF",
             }}
           >
             5,352

@@ -3,10 +3,10 @@ import type { GraphEdgeType } from "@/lib/api";
 export const CLUSTER_COLORS: Record<string, string> = {
   maritime: "#2563EB",
   agriculture: "#16A34A",
-  kinship: "#B45309",
+  kinship: "#2563EB",
   "daily-life": "#7C3AED",
   greetings: "#CA8A04",
-  household: "#C2410C",
+  household: "#DB2777",
   nature: "#0D9488",
 };
 
@@ -37,5 +37,5 @@ export const EDGE_TYPE_STYLES: Record<
 > = {
   related_term: { dash: null, opacity: 0.5, color: "#78716C", label: "Related term" },
   cluster: { dash: [5, 5], opacity: 0.2, color: "#D6CFC5", label: "Cluster" },
-  embedding: { dash: [2, 3], opacity: 0.35, color: "#B45309", label: "Embedding" },
+  embedding: { dash: [2, 3], opacity: 0.35, color: "#2563EB", label: "Embedding" },
 };

@@ -20,9 +20,9 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TongueKeeper — AI-Powered Endangered Language Preservation",
+  title: "LangSafe LingHacks — AI Language Preservation",
   description:
-    "Autonomous AI agents that discover, extract, and cross-reference endangered language content from across the internet. Preserving the world's endangered languages for future generations.",
+    "A LingHacks VII edition of LangSafe: autonomous AI agents, community verification, and lesson generation for endangered language preservation.",
   keywords: [
     "endangered languages",
     "language preservation",

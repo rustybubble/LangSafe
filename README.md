@@ -1,10 +1,10 @@
-# TongueKeeper
+# LangSafe LingHacks
 
-**Every language is a universe of thought. We keep them alive.**
+**Every language is a universe of thought. This LingHacks VII edition helps communities keep them alive.**
 
-An AI-powered platform that autonomously discovers, aggregates, and cross-references endangered language content scattered across the internet — transforming fragments into a unified, searchable, living linguistic archive.
+An AI-powered platform that autonomously discovers, aggregates, cross-references, and revitalizes endangered language content scattered across the internet — transforming fragments into a unified, searchable, community-reviewed learning archive.
 
-**[Live Demo](https://tonguekeeper.vercel.app)**
+Original project reference: [LangSafe](https://LangSafe.vercel.app)
 
 ---
 
@@ -14,7 +14,29 @@ A language dies every two weeks. By 2100, UNESCO estimates half of the world's ~
 
 The resources to preserve these languages exist, but they're scattered across obscure PDFs, YouTube videos, academic papers, dictionary websites, and government archives in dozens of disconnected sources. A linguist would need months to even *find* them all, let alone cross-reference and synthesize them.
 
-TongueKeeper deploys a swarm of AI agents that autonomously crawl the web, discover these scattered fragments, extract linguistic data — vocabulary, grammar, audio, cultural context — and synthesize everything into a unified, searchable archive. In minutes, not months.
+LangSafe deploys a swarm of AI agents that autonomously crawl the web, discover these scattered fragments, extract linguistic data — vocabulary, grammar, audio, cultural context — and synthesize everything into a unified, searchable archive. In minutes, not months.
+
+---
+
+## LingHacks VII Edition
+
+This fork adapts LangSafe for LingHacks VII with a judge-ready, no-key demo path and a stronger impact loop:
+
+- **Demo-safe archive mode** — Jejueo fallback data powers vocabulary, grammar, graph, sources, run history, and language overview screens even without Elasticsearch or API keys.
+- **Revitalization Studio** — Community reviewers can verify entries, request elder notes, flag sensitive content, and generate lesson packs from preserved vocabulary.
+- **Featherless.ai lesson generation** — The Studio uses Featherless's OpenAI-compatible chat API when `FEATHERLESS_API_KEY` is configured, with a local fallback for live demos.
+- **Judge Brief** — A dedicated rubric page maps the project to creativity, impact, feasibility, technology, and UI/UX.
+- **Human-centered first screen** — A clean blue visual direction and LingHacks framing make the product feel like a preservation tool, not only an agent dashboard.
+- **Provenance-aware submission** — This is adapted from the earlier LangSafe codebase; disclose prior-code reuse and confirm hackathon rules before submitting.
+
+Suggested demo path:
+
+1. Open `/dashboard`, choose Jejueo, and run preservation.
+2. Watch the real-time agent feed populate.
+3. Search the Archive tab for `sea`, `haenyeo`, or `badang`.
+4. Open Graph and Sources to show relationships and provenance.
+5. Open `/studio` to verify entries and generate a lesson pack.
+6. Open `/judge-brief` for the rubric-aligned summary.
 
 ---
 
@@ -51,6 +73,10 @@ TongueKeeper deploys a swarm of AI agents that autonomously crawl the web, disco
 - **Grammar Reference** — Browsable grammar patterns across 9 categories (verb conjugation, particles, sentence structure, honorifics, negation, questions, phonological rules, morphological rules)
 - **Language Browser** — 5,352 endangered languages from Glottolog CLDF with filtering by endangerment status, macroarea, language family, and speaker count
 - **Interactive Maps** — Leaflet maps with marker, heatmap, and choropleth modes showing global language endangerment
+- **Community Review** — Speaker, teacher, and linguist review modes for verification, elder follow-up, and sensitive-content flagging
+- **Lesson Pack Builder** — Generates classroom, family, and fieldwork-ready learning packs from archive vocabulary and grammar
+- **Judge Brief** — Rubric-aligned demo narrative for hackathon presentations
+- **Offline Demo Fallbacks** — Search, grammar, graph, sources, run artifacts, stats, and overview routes degrade to realistic Jejueo demo data
 - **Audio Pipeline** — YouTube audio extraction with Whisper transcription (RunPod serverless), word-level timestamps, and pronunciation avatar generation (HeyGen)
 - **PDF & Scan Extraction** — Text extraction via pdf-parse with automatic Vision API fallback for scanned/degraded documents
 - **Adaptive Web Crawling** — Domain-specific crawlers with BrightData Web Unlocker for geo-blocked and CAPTCHA-protected sources
@@ -65,6 +91,7 @@ TongueKeeper deploys a swarm of AI agents that autonomously crawl the web, disco
 | **Visualization** | react-force-graph-2d, Leaflet + react-leaflet, Recharts, D3.js |
 | **Backend** | Express 5, Socket.io, Node.js (tsx runtime) |
 | **AI Agents** | Anthropic Claude (Haiku 4.5 + Sonnet 4.5), manual tool-use loops |
+| **Lesson Generation** | Featherless.ai OpenAI-compatible chat completions, demo fallback generator |
 | **Search & Discovery** | Perplexity Sonar API, BrightData SERP API + Web Unlocker |
 | **Embeddings** | Jina AI v3 (embeddings) + v2 (reranking) |
 | **Data Store** | Elasticsearch 9 (serverless) — vocabulary, grammar, languages, pipeline runs |
@@ -121,8 +148,8 @@ TongueKeeper deploys a swarm of AI agents that autonomously crawl the web, disco
 ### Install
 
 ```bash
-git clone https://github.com/lourdrickvalsote/tonguekeeper.git
-cd tonguekeeper
+git clone https://github.com/lourdrickvalsote/LangSafe.git langsafe-linghacks
+cd langsafe-linghacks
 npm install --legacy-peer-deps
 ```
 
@@ -135,6 +162,8 @@ Create a `.env.local` file in the project root:
 | `ELASTIC_URL` | Yes | Elasticsearch cluster URL |
 | `ELASTIC_API_KEY` | Yes | Elasticsearch API key |
 | `ANTHROPIC_API_KEY` | Yes | Claude API key (agents) |
+| `FEATHERLESS_API_KEY` | No | Featherless.ai key for lesson generation in Studio |
+| `FEATHERLESS_MODEL` | No | Featherless model ID, defaults to `Qwen/Qwen2.5-7B-Instruct` |
 | `PERPLEXITY_API_KEY` | Yes | Perplexity Sonar API key (discovery search) |
 | `JINA_API_KEY` | Yes | Jina AI key (embeddings + reranking) |
 | `NEXT_PUBLIC_WS_URL` | No | WebSocket server URL (default: `http://localhost:3001`) |
@@ -169,6 +198,8 @@ npm run ml        # Python ML service on :3003
 
 Open [http://localhost:3000](http://localhost:3000) to see the dashboard.
 
+The LingHacks demo also works without live API credentials because the app falls back to bundled Jejueo demo data.
+
 ---
 
 ## Scripts
@@ -194,7 +225,7 @@ Open [http://localhost:3000](http://localhost:3000) to see the dashboard.
 ## Project Structure
 
 ```
-tonguekeeper/
+LangSafe/
 ├── app/                        # Next.js App Router
 │   ├── (main)/dashboard/       # Preservation dashboard
 │   ├── (main)/languages/       # Language browser + detail pages
@@ -233,6 +264,7 @@ tonguekeeper/
 
 | Sponsor | Integration |
 |---|---|
+| **Featherless.ai** | OpenAI-compatible server-side lesson generation for the Revitalization Studio |
 | **Anthropic** | Claude Haiku 4.5 + Sonnet 4.5 power the extraction, cross-reference, and enrichment agents |
 | **BrightData** | SERP API for geo-targeted search from inside countries; Web Unlocker for CAPTCHA-protected archives |
 | **Browserbase** | Stagehand headless browser for JavaScript-heavy dictionary sites |
@@ -264,4 +296,4 @@ MIT
 
 ---
 
-*Built for [TreeHacks 2026](https://www.treehacks.com/) at Stanford University.*
+*LingHacks VII adaptation, June 13-14, 2026.*

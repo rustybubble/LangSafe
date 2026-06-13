@@ -84,7 +84,7 @@ async function testSyntheticVision() {
     // Instead, let's try fetch from a reliable source as last resort
     try {
       const res = await fetch("https://picsum.photos/600/800", {
-        headers: { "User-Agent": "TongueKeeper/1.0" },
+        headers: { "User-Agent": "LangSafe/1.0" },
         redirect: "follow",
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);

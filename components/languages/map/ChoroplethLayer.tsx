@@ -81,7 +81,7 @@ export function ChoroplethLayer({ countryStats }: ChoroplethLayerProps) {
             const color = ENDANGERMENT_COLORS[status];
             const label = ENDANGERMENT_LABELS[status];
             breakdownHtml += `
-              <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:#6B6560">
+              <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:#667085">
                 <span style="width:6px;height:6px;border-radius:50%;background:${color};flex-shrink:0"></span>
                 ${label}: ${n}
               </div>`;
@@ -92,10 +92,10 @@ export function ChoroplethLayer({ countryStats }: ChoroplethLayerProps) {
 
       layer.bindPopup(
         `<div style="min-width:160px;font-family:var(--font-plus-jakarta),sans-serif">
-          <div style="font-size:14px;font-weight:600;color:#1A1714;margin-bottom:4px;font-family:var(--font-dm-serif),serif">
+          <div style="font-size:14px;font-weight:600;color:#0F172A;margin-bottom:4px;font-family:var(--font-dm-serif),serif">
             ${name}
           </div>
-          <div style="font-size:12px;color:#6B6560">
+          <div style="font-size:12px;color:#667085">
             ${count} endangered language${count !== 1 ? "s" : ""}
           </div>
           ${breakdownHtml}

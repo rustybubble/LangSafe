@@ -47,13 +47,13 @@ function buildDisplayStats(
       label: "Grammar",
       value: base.grammar_patterns.toString(),
       icon: Braces,
-      color: "#A3470A",
+      color: "#0A84FF",
     },
     {
       label: "Coverage",
       value: `${base.coverage_percentage}%`,
       icon: TrendingUp,
-      color: "#C42B2B",
+      color: "#D92D20",
     },
   ];
 }

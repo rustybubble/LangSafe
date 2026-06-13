@@ -85,7 +85,7 @@ export async function runOrchestrator(req: PreservationRequest, signal?: AbortSi
   }
 
   console.log(`\n${"=".repeat(60)}`);
-  console.log(`  TongueKeeper Pipeline: ${meta.language_name} (${meta.language_code})`);
+  console.log(`  LangSafe Pipeline: ${meta.language_name} (${meta.language_code})`);
   console.log(`${"=".repeat(60)}\n`);
 
   // Store extraction results per source for cross-referencing

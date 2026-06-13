@@ -4,6 +4,7 @@ import { kvGet, kvSet, cacheKeys, TTL } from "@/lib/kv-cache";
 import type { LanguageEntry } from "@/lib/types";
 import { getErrorMessage } from "@/lib/utils/errors";
 import { apiError } from "@/lib/utils/api-response";
+import { getDemoLanguage } from "@/lib/demo-data";
 
 export async function GET(
   _request: NextRequest,
@@ -22,6 +23,8 @@ export async function GET(
     const language = await getLanguage(glottocode);
 
     if (!language) {
+      const demoLanguage = getDemoLanguage(glottocode);
+      if (demoLanguage) return NextResponse.json(demoLanguage);
       return apiError("Language not found", 404);
     }
 
@@ -31,6 +34,8 @@ export async function GET(
     return NextResponse.json(language);
   } catch (err) {
     console.warn(`[/api/languages/${glottocode}] Failed:`, getErrorMessage(err));
+    const demoLanguage = getDemoLanguage(glottocode);
+    if (demoLanguage) return NextResponse.json(demoLanguage);
     return apiError("Failed to fetch language", 500);
   }
 }

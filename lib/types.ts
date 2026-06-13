@@ -201,7 +201,7 @@ export const AGENT_COLORS: Record<AgentType, string> = {
   extraction: "#047857",
   cross_reference: "#6D28D9",
   pronunciation: "#DC2626",
-  orchestrator: "#B45309",
+  orchestrator: "#2563EB",
 };
 
 export const AGENT_LABELS: Record<AgentType, string> = {

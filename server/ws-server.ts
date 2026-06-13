@@ -283,7 +283,7 @@ app.get("/health", (_req, res) => {
 const PORT = parseInt(process.env.PORT || process.env.WS_PORT || "3001", 10);
 
 httpServer.listen(PORT, () => {
-  console.log(`\n  TongueKeeper WebSocket Server`);
+  console.log(`\n  LangSafe WebSocket Server`);
   console.log(`  ─────────────────────────────`);
   console.log(`  Port:    ${PORT}`);
   console.log(`  CORS:    ${CORS_ORIGINS.join(", ")}`);
