@@ -74,51 +74,54 @@ Next, LangSafe could expand in several directions:
 
 ## 3 Minute Technical Demo Video Script
 
+Use this as the full narration. The same script is also saved as `devpost-video-script.md` for recording.
+
 ### 0:00-0:20 - Hook
 
-On screen: LangSafe landing page.
+On screen: Open the LangSafe home page.
 
-Say: "Every endangered language is more than a vocabulary list. It carries memory, ecological knowledge, family history, place names, and identity. The problem is that the resources are scattered across PDFs, dictionary websites, videos, audio collections, and academic archives. LangSafe turns those fragments into a living, community-reviewed learning archive."
+Say: "Every endangered language carries more than words. It carries place names, ecological knowledge, family memory, humor, oral history, and identity. But the resources that preserve those languages are usually scattered across PDFs, dictionary websites, YouTube videos, audio collections, academic papers, and small community archives. LangSafe turns those scattered fragments into a living, searchable, community-reviewed learning archive."
 
-### 0:20-0:45 - System Overview
+### 0:20-0:45 - Product Overview
 
-On screen: Open Dashboard, then the Jejueo language page.
+On screen: Go from the home page to the Jejueo language page.
 
-Say: "LangSafe is a full-stack AI preservation platform. The frontend is built with Next.js, React, TypeScript, Tailwind, shadcn UI, and Framer Motion. The backend uses Next API routes, Socket.io event streaming, Elasticsearch-ready data models, Jina-style semantic search, map and graph visualizations, and model-powered workflows. For LingHacks, the main demo language is Jejueo, a critically endangered language of Jeju Island."
+Say: "For LingHacks, I focused the demo around Jejueo, a critically endangered language from Jeju Island. LangSafe is designed as a full preservation workspace: it shows language health, archived vocabulary, grammar patterns, source coverage, audio counts, maps, and a review workflow. The idea is not just to collect data, but to help speakers, teachers, and linguists turn preserved material into usable learning resources."
 
-### 0:45-1:10 - Language Archive and Metrics
+### 0:45-1:15 - Technical Stack
 
-On screen: Jejueo language detail page. Show metrics, map, and About section.
+On screen: Show the Judge Brief or About page while scrolling through the stack.
 
-Say: "The language page gives judges the impact layer immediately: estimated speakers, endangerment status, entry count, source count, audio count, grammar patterns, and coverage percentage. This is not just a static profile. It is designed as a preservation workspace where a team can see what has been captured, what is missing, and which language resources need more attention."
+Say: "Technically, LangSafe is built with Next.js 16, React 19, TypeScript, Tailwind CSS, shadcn UI, Framer Motion, and server-side API routes. The archive model is Elasticsearch-ready, with structured vocabulary, grammar, sources, language metadata, and source cross-references. The interface uses Leaflet for geography, Recharts and D3 for metrics, and a graph view to represent relationships between words, semantic clusters, and sources. The backend is designed around agent-style workflows, with Socket.io events for live preservation runs and Zod schemas to keep extracted data structured."
 
-### 1:10-1:35 - Archive Search, Grammar, Sources, and Graph
+### 1:15-1:45 - Archive and Search
 
-On screen: Open the archive/search area for Jejueo. Show search, grammar, sources, and graph if available.
+On screen: On `/languages/jeju1234`, show the metrics, then the Archive tab. Search or point at entries like `바당`, `해녀`, and `물질`.
 
-Say: "The archive supports multiple ways to inspect preserved language data. You can search vocabulary by English meaning, native script, romanization, or semantic cluster. Grammar patterns are stored separately, with examples and related vocabulary. Sources are tracked by type, such as dictionaries, archives, videos, and academic papers. The graph view connects related words, semantic clusters, and source relationships so a linguist can understand the structure of the archive, not just a flat word list."
+Say: "This archive view is where the preserved data becomes usable. A user can search by English meaning, native script, romanization, part of speech, semantic cluster, source count, or audio availability. Each entry keeps definitions, translations, cultural tags, related terms, and source references. This matters because endangered-language work often has incomplete or conflicting sources, so LangSafe keeps confidence and provenance visible instead of hiding uncertainty."
 
-### 1:35-2:00 - Ask Tab Powered by Featherless.ai
+### 1:45-2:10 - Featherless.ai Ask Tab
 
-On screen: Open Ask tab and ask, "What Jejueo words have been preserved so far?"
+On screen: Open the Ask tab and ask: `What Jejueo words in this archive relate to ocean culture?`
 
-Say: "The Ask tab is now powered by Featherless.ai. The route sends the question plus grounded LangSafe archive context to an open-weight model through Featherless's OpenAI-compatible API. The answer streams back into the UI using server-sent events, so it feels like an agent chat while staying grounded in the current language archive. If production credentials are missing, the route still answers from the bundled demo archive instead of failing."
+Say: "The Ask tab is powered by Featherless.ai. The server route gathers the current LangSafe archive context, sends a grounded prompt through Featherless's OpenAI-compatible API, and streams the response back with server-sent events. That means the answer feels conversational, but it is still based on the language archive instead of being a generic chatbot. I also built fallback behavior so the hackathon demo still works if a supporting service is unavailable."
 
-### 2:00-2:35 - Community Review and Lesson Generation
+### 2:10-2:40 - Full Preservation Pipeline
 
-On screen: Revitalization Studio lesson builder. Click Generate lesson pack and show Featherless.ai badge/model.
+On screen: Show Sources, Graph, and then the Revitalization Studio.
 
-Say: "The most important product decision is that humans stay in the loop. In the Revitalization Studio, a speaker, teacher, or linguist can verify entries, request an elder note, or flag sensitive content. Then the right side turns reviewed archive data into learning material. The lesson builder sends selected vocabulary, the grammar focus, audience, quiz setting, and oral-history prompt setting to Featherless.ai. It returns a classroom, family, or fieldwork-ready lesson pack with activities, a quick check, and a community interview prompt. The API key stays server-side."
+Say: "Behind the UI, the larger pipeline is modular. Featherless is used for source planning, extraction, cross-reference, enrichment, Ask responses, lesson generation, and transcript correction. Browserbase Stagehand can handle JavaScript-heavy dictionary or media pages, BrightData can be plugged in for web unlocking or discovery, Jina-style retrieval supports semantic search, and the audio hooks are ready for Whisper transcription and pronunciation workflows. The key design choice is that all of this feeds back into a reviewable archive, not an unverified AI output."
 
-### 2:35-3:05 - Technical Depth and Close
+### 2:40-3:15 - Revitalization Studio and Close
 
-On screen: Judge Brief page.
+On screen: In Studio, show the Community Review Queue and generate a lesson pack.
 
-Say: "The Judge Brief summarizes the technical stack and rubric alignment. LangSafe combines a polished Next.js interface, API routes, live agent-style streaming, demo-safe fallbacks, Elasticsearch-compatible archive models, Jina-style semantic retrieval, Featherless-powered source planning and extraction, optional BrightData discovery paths, Browserbase crawling support, graph visualization, maps, audio pipeline hooks, and Featherless.ai lesson generation. The core idea is simple but powerful: move endangered-language work from scattered fragments to verified learning materials communities can actually use."
+Say: "The Revitalization Studio is the impact layer. A teacher, speaker, or linguist can review entries, request elder notes, flag sensitive content, and generate classroom or family learning material from verified vocabulary. The lesson generator sends selected archive entries, audience level, grammar focus, quiz settings, and oral-history prompts to Featherless, then returns a practical lesson pack. So the final result is not just a database. LangSafe connects discovery, preservation, human review, and teaching. It helps endangered-language communities move from scattered documentation to living learning material."
 
 ## Suggested Screenshots
 
-- `devpost-screenshots/01-langsafe-hero.png`
+- `devpost-screenshots/01-langsafe-home.png`
 - `devpost-screenshots/02-jejueo-language-detail.png`
-- `devpost-screenshots/03-featherless-studio.png`
+- `devpost-screenshots/03-featherless-ask-tab.png`
 - `devpost-screenshots/04-judge-brief.png`
+- `devpost-screenshots/05-featherless-studio.png`
